@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>НетворкингСити: свои везде</title>
+  <style>
+    :root{
+      --bg1:#dff6ff;
+      --bg2:#f7f5ff;
+      --panel:#ffffffd9;
+      --text:#24324a;
+      --accent:#5e9cff;
+      --accent2:#72d6c9;
+      --accent3:#ffd166;
+      --danger:#ff7b89;
+      --success:#6fd08c;
+      --shadow:0 12px 30px rgba(56,82,132,.18);
+      --radius:24px;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: "Segoe UI", Inter, Arial, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top left, #ffffff 0, #eff9ff 25%, #e8f3ff 48%, #eef0ff 100%);
+      min-height:100vh;
+    }
+
+    .app{
+      width:100%;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+    }
+
+    .screen{
+      display:none;
+      width:min(1200px, 100%);
+      min-height:760px;
+      background:linear-gradient(180deg, rgba(255,255,255,.72), rgba(255,255,255,.82));
+      border:1px solid rgba(255,255,255,.8);
+      border-radius:32px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      position:relative;
+      backdrop-filter: blur(8px);
+    }
+
+    .screen.active{display:block}
+
+    .topbar{
+      position:absolute;
+      top:14px;
+      left:18px;
+      right:18px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      z-index:50;
+    }
+
+    .logo{
+      font-weight:800;
+      letter-spacing:.3px;
+      color:#4063b8;
+      background:#ffffffcc;
+      padding:10px 16px;
+      border-radius:999px;
+      box-shadow:0 8px 20px rgba(64,99,184,.12);
+    }
+
+    .stats{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .stat{
+      background:#ffffffd6;
+      border-radius:999px;
+      padding:10px 14px;
+      font-size:14px;
+      box-shadow:0 8px 20px rgba(64,99,184,.10);
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+
+    .content{
+      padding:90px 42px 42px;
+      min-height:760px;
+      position:relative;
+    }
+
+    h1,h2,h3,p{margin-top:0}
+
+    .hero{
+      min-height:760px;
+      display:grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap:24px;
+      align-items:center;
+      padding:90px 42px 42px;
+      background:
+        linear-gradient(135deg, rgba(114,214,201,.18), rgba(94,156,255,.12)),
+        linear-gradient(180deg, #f7fdff, #eef2ff);
+    }
+
+    .hero-art{
+      height:100%;
+      min-height:560px;
+      border-radius:28px;
+      background:
+        radial-gradient(circle at 70% 20%, #ffffff 0 10%, transparent 11%),
+        radial-gradient(circle at 18% 18%, #fff7c2 0 8%, transparent 9%),
+        linear-gradient(180deg, #d8f3ff 0 42%, #bfe7c7 42% 70%, #9cd08d 70% 100%);
+      position:relative;
+      overflow:hidden;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.7);
+    }
+
+    .building{
+      position:absolute;
+      bottom:120px;
+      width:120px;
+      border-radius:18px 18px 8px 8px;
+      background:#fff;
+      box-shadow:0 8px 18px rgba(0,0,0,.08);
+    }
+    .building:before{
+      content:"";
+      position:absolute;
+      inset:12px;
+      background:
+        linear-gradient(90deg, transparent 0 12%, #d7ebff 12% 22%, transparent 22% 35%, #d7ebff 35% 45%, transparent 45% 58%, #d7ebff 58% 68%, transparent 68% 100%);
+      border-radius:12px;
+      opacity:.9;
+    }
+    .b1{left:60px;height:210px}
+    .b2{left:200px;height:290px;width:150px}
+    .b3{left:380px;height:180px;width:110px}
+    .road{
+      position:absolute;left:-10%;right:-10%;bottom:38px;height:110px;
+      background:#67738d;border-radius:50% 50% 0 0 / 100% 100% 0 0;
+    }
+    .road:before{
+      content:"";position:absolute;left:10%;right:10%;top:52px;height:8px;
+      background:repeating-linear-gradient(90deg,#fff 0 30px,transparent 30px 55px);
+    }
+
+    .title{
+      font-size:54px;
+      line-height:1.05;
+      font-weight:900;
+      color:#28467e;
+      margin-bottom:12px;
+    }
+    .subtitle{
+      font-size:24px;
+      color:#536b92;
+      margin-bottom:28px;
+    }
+
+    .btn{
+      appearance:none;
+      border:none;
+      border-radius:999px;
+      background:linear-gradient(135deg, var(--accent), #7a7dff);
+      color:#fff;
+      font-weight:800;
+      padding:16px 28px;
+      cursor:pointer;
+      box-shadow:0 12px 24px rgba(94,156,255,.35);
+      transition:.2s ease;
+      font-size:16px;
+    }
+    .btn:hover{transform:translateY(-2px) scale(1.02)}
+    .btn.secondary{
+      background:linear-gradient(135deg, var(--accent2), #46b8d6);
+      box-shadow:0 12px 24px rgba(70,184,214,.28);
+    }
+    .btn.warn{
+      background:linear-gradient(135deg, #ff9f68, #ff7b89);
+      box-shadow:0 12px 24px rgba(255,123,137,.28);
+    }
+    .btn.ghost{
+      background:#ffffff;
+      color:#4063b8;
+      box-shadow:0 10px 20px rgba(64,99,184,.12);
+    }
+
+    .panel{
+      background:var(--panel);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:24px;
+    }
+
+    .welcome-layout,
+    .office-layout,
+    .balance-layout,
+    .final-layout{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:26px;
+      align-items:stretch;
+    }
+
+    .bullets{
+      margin:18px 0;
+      padding-left:20px;
+      line-height:1.7;
+    }
+
+    .room-scene{
+      height:560px;
+      border-radius:28px;
+      position:relative;
+      overflow:hidden;
+      background:
+        linear-gradient(180deg, #d8eefb 0 42%, #f4d7c7 42% 100%);
+    }
+    .wall-line{
+      position:absolute;left:0;right:0;top:42%;height:4px;background:#d5b5a3;
+    }
+    .floor-rug{
+      position:absolute;left:22%;bottom:26px;width:48%;height:110px;
+      background:#f8e5ff;border-radius:50%;
+      box-shadow:inset 0 0 0 12px rgba(255,255,255,.35);
+    }
+    .window{
+      position:absolute;right:40px;top:48px;width:180px;height:140px;border-radius:18px;
+      background:linear-gradient(180deg,#b7ecff,#e9fbff);
+      box-shadow:inset 0 0 0 10px #fff;
+    }
+    .bed{
+      position:absolute;left:48px;bottom:120px;width:280px;height:120px;background:#ffe2ef;border-radius:24px;
+    }
+    .bed:before{
+      content:"";position:absolute;left:14px;top:-40px;width:80px;height:60px;background:#f8c4db;border-radius:18px;
+    }
+    .dresser{
+      position:absolute;right:140px;bottom:145px;width:120px;height:120px;background:#d9b08c;border-radius:16px;
+      box-shadow:inset 0 -8px 0 rgba(0,0,0,.08);
+    }
+    .dresser:before{
+      content:"";position:absolute;left:14px;right:14px;top:32px;height:6px;background:#c38e68;border-radius:6px;
+      box-shadow:0 34px 0 #c38e68;
+    }
+    .carpet-toy{
+      position:absolute;left:110px;bottom:86px;width:40px;height:40px;background:#ffd166;border-radius:50%;
+    }
+
+    .character{
+      position:absolute;
+      left:360px;
+      bottom:112px;
+      width:140px;height:240px;
+    }
+    .character .head{
+      position:absolute;left:42px;top:0;width:56px;height:56px;background:#ffd8bf;border-radius:50%;
+      z-index:2;
+    }
+    .character .hair{
+      position:absolute;left:34px;top:-4px;width:72px;height:64px;background:#a65b2a;border-radius:48px 48px 38px 38px;
+      z-index:3;
+    }
+    .character .body{
+      position:absolute;left:28px;top:54px;width:86px;height:92px;background:#74b2ff;border-radius:24px;
+    }
+    .character .legs{
+      position:absolute;left:38px;top:138px;width:20px;height:90px;background:#4f72b8;border-radius:12px;
+      box-shadow:42px 0 0 #4f72b8;
+    }
+
+    .click-zone{
+      position:absolute;
+      cursor:pointer;
+      border-radius:16px;
+      transition:.2s ease;
+    }
+    .click-zone:hover{
+      box-shadow:0 0 0 4px rgba(255,255,255,.85), 0 0 0 8px rgba(94,156,255,.35);
+      background:rgba(255,255,255,.12);
+    }
+
+    .keys-zone{ right:154px; bottom:190px; width:70px; height:36px; }
+    .keys-vis{
+      position:absolute; right:168px; bottom:200px; width:36px; height:16px;
+      background:#f6d66d;border-radius:10px;transform:rotate(-12deg);
+      box-shadow:18px 6px 0 -4px #f6d66d;
+    }
+
+    .hint{
+      display:inline-block;
+      background:#ffffffd9;
+      border-radius:18px;
+      padding:14px 18px;
+      box-shadow:var(--shadow);
+      line-height:1.5;
+    }
+
+    .map-scene{
+      height:580px;
+      position:relative;
+      overflow:hidden;
+      border-radius:28px;
+      background:
+        radial-gradient(circle at 18% 22%, #b0ecff 0 9%, transparent 10%),
+        linear-gradient(180deg,#bfe8ff 0 26%, #8dd3a3 26% 100%);
+    }
+    .map-road-h, .map-road-v{
+      position:absolute;background:#707b92;
+    }
+    .map-road-h{left:0;right:0;height:70px;top:220px}
+    .map-road-v{top:0;bottom:0;width:70px;left:420px}
+    .plot{
+      position:absolute;border-radius:26px;background:#ffffffc9;box-shadow:0 10px 20px rgba(0,0,0,.08);
+      display:flex;align-items:center;justify-content:center;font-weight:800;color:#44608f;
+      text-align:center;padding:10px;
+    }
+    .plot.home{left:80px;bottom:80px;width:230px;height:150px}
+    .plot.office{right:90px;top:80px;width:250px;height:170px}
+    .plot.park{left:120px;top:70px;width:180px;height:110px}
+    .plot.hall{right:160px;bottom:90px;width:200px;height:120px}
+    .marker{
+      position:absolute;
+      width:28px;height:28px;border-radius:50%;
+      background:#ff6b7f;
+      border:4px solid #fff;
+      box-shadow:0 0 0 0 rgba(255,107,127,.55);
+      animation:pulse 1.6s infinite;
+      cursor:pointer;
+      z-index:5;
+    }
+    .marker:after{
+      content:"";
+      position:absolute;left:50%;top:50%;width:8px;height:8px;border-radius:50%;
+      background:#fff;transform:translate(-50%,-50%);
+    }
+    @keyframes pulse{
+      0%{box-shadow:0 0 0 0 rgba(255,107,127,.55)}
+      70%{box-shadow:0 0 0 18px rgba(255,107,127,0)}
+      100%{box-shadow:0 0 0 0 rgba(255,107,127,0)}
+    }
+
+    .office-scene{
+      height:420px;border-radius:28px;position:relative;overflow:hidden;
+      background:linear-gradient(180deg,#dcedff 0 56%, #d8c3b0 56% 100%);
+    }
+    .office-window{
+      position:absolute;left:40px;top:40px;width:200px;height:110px;border-radius:20px;background:#bfe8ff;
+      box-shadow:inset 0 0 0 10px #fff;
+    }
+    .desk{
+      position:absolute;left:110px;bottom:90px;width:340px;height:80px;background:#c69469;border-radius:20px;
+    }
+    .chair{
+      position:absolute;left:220px;bottom:36px;width:120px;height:90px;background:#69a6ff;border-radius:20px;
+    }
+    .boss{
+      position:absolute;right:120px;bottom:86px;width:130px;height:230px;
+    }
+    .boss .head{position:absolute;left:40px;top:0;width:54px;height:54px;background:#ffd8bf;border-radius:50%}
+    .boss .hair{position:absolute;left:34px;top:-2px;width:64px;height:44px;background:#43362d;border-radius:30px 30px 20px 20px}
+    .boss .body{position:absolute;left:28px;top:50px;width:82px;height:100px;background:#7d8ca8;border-radius:20px}
+    .boss .legs{position:absolute;left:40px;top:142px;width:18px;height:84px;background:#374966;border-radius:12px;box-shadow:34px 0 0 #374966}
+
+    .choices{
+      display:flex;
+      gap:14px;
+      flex-wrap:wrap;
+      margin-top:16px;
+    }
+
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:28px;
+      transform:translateX(-50%) translateY(20px);
+      background:#24324a;
+      color:#fff;
+      padding:14px 18px;
+      border-radius:999px;
+      opacity:0;
+      pointer-events:none;
+      transition:.3s ease;
+      z-index:999;
+      box-shadow:0 10px 24px rgba(0,0,0,.18);
+    }
+    .toast.show{
+      opacity:1;
+      transform:translateX(-50%) translateY(0);
+    }
+    .toast.good{background:#1f8f5f}
+    .toast.bad{background:#c75467}
+
+    .warning-box{
+      margin-top:16px;
+      padding:18px;
+      border-radius:18px;
+      background:#fff4e8;
+      border:1px solid #ffd2a8;
+    }
+
+    .relation-box{
+      margin-top:18px;
+      border-radius:22px;
+      padding:20px;
+      background:linear-gradient(180deg,#fff7f7,#ffeef1);
+      box-shadow:var(--shadow);
+      border:1px solid #ffd6df;
+    }
+
+    .relation-meter{
+      width:220px;height:16px;border-radius:999px;background:#ffd7de;overflow:hidden;margin-bottom:14px;
+      box-shadow:inset 0 2px 6px rgba(0,0,0,.08);
+    }
+    .relation-meter > span{
+      display:block;height:100%;width:28%;background:linear-gradient(90deg,#ff8897,#ff6b7f);
+    }
+
+    .metrics{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:16px;
+      margin:20px 0;
+    }
+    .metric{
+      background:#ffffffd9;
+      border-radius:24px;
+      padding:20px;
+      box-shadow:var(--shadow);
+      min-height:170px;
+    }
+    .metric .icon{
+      width:58px;height:58px;border-radius:18px;
+      display:flex;align-items:center;justify-content:center;
+      font-size:28px;
+      margin-bottom:12px;
+      background:linear-gradient(135deg,#eff5ff,#dceaff);
+    }
+    .metric strong{font-size:26px;color:#3356a5}
+
+    .cards{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:20px;
+      margin-top:22px;
+    }
+    .flip{
+      perspective:1000px;
+      height:240px;
+      cursor:pointer;
+    }
+    .flip-inner{
+      position:relative;width:100%;height:100%;transition:transform .7s;transform-style:preserve-3d;
+    }
+    .flip.flipped .flip-inner{transform:rotateY(180deg)}
+    .flip-side{
+      position:absolute;inset:0;border-radius:24px;backface-visibility:hidden;
+      box-shadow:var(--shadow);padding:22px;
+      display:flex;flex-direction:column;justify-content:center;
+    }
+    .flip-front{
+      background:linear-gradient(180deg,#ffffff,#edf3ff);
+      align-items:center;text-align:center;
+    }
+    .flip-back{
+      background:linear-gradient(180deg,#dff9f3,#eef7ff);
+      transform:rotateY(180deg);
+    }
+
+    .laptop-room .laptop{
+      position:absolute;right:220px;bottom:166px;width:76px;height:44px;background:#7f8ba3;border-radius:8px 8px 4px 4px;
+      transform:skew(-12deg);
+      box-shadow:0 8px 12px rgba(0,0,0,.15);
+    }
+    .laptop-room .table{
+      position:absolute;right:170px;bottom:140px;width:180px;height:26px;background:#c69469;border-radius:12px;
+    }
+    .laptop-zone{ right:205px; bottom:150px; width:110px; height:78px; }
+
+    .thought{
+      position:absolute;left:36px;top:36px;max-width:520px;
+      background:#fff;
+      border-radius:28px;
+      padding:20px 22px;
+      box-shadow:var(--shadow);
+      line-height:1.6;
+    }
+
+    .balance-layout{
+      grid-template-columns: 520px 1fr;
+      align-items:start;
+    }
+
+    .wheel-wrap{
+      background:#ffffffd9;
+      border-radius:28px;
+      box-shadow:var(--shadow);
+      padding:18px;
+    }
+
+    svg text{
+      font-family:"Segoe UI", Arial, sans-serif;
+    }
+
+    .scale-buttons{
+      display:grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap:10px;
+      margin:18px 0 10px;
+    }
+    .score-btn{
+      border:none;
+      border-radius:14px;
+      padding:12px 10px;
+      font-weight:800;
+      cursor:pointer;
+      background:#eef4ff;
+      color:#3f5d99;
+      box-shadow:0 6px 14px rgba(63,93,153,.10);
+    }
+    .score-btn:hover{background:#dfeaff}
+    .legend{
+      font-size:14px;
+      line-height:1.55;
+      background:#fff;
+      padding:16px;
+      border-radius:18px;
+      box-shadow:var(--shadow);
+    }
+
+    .tag-list{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      margin-top:18px;
+    }
+    .tag{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      background:#fff;
+      padding:12px 16px;
+      border-radius:999px;
+      box-shadow:var(--shadow);
+      font-weight:700;
+    }
+    .tag .emoji{
+      width:34px;height:34px;border-radius:12px;
+      display:flex;align-items:center;justify-content:center;
+      background:#eef4ff;
+    }
+
+    .footer-actions{
+      margin-top:24px;
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .small{
+      font-size:14px;
+      opacity:.8;
+    }
+
+    @media (max-width: 980px){
+      .hero,
+      .welcome-layout,
+      .office-layout,
+      .balance-layout,
+      .final-layout{
+        grid-template-columns: 1fr;
+      }
+      .cards, .metrics{
+        grid-template-columns:1fr;
+      }
+      .screen{
+        min-height:auto;
+      }
+      .content,.hero{
+        padding:88px 20px 20px;
+      }
+      .title{font-size:40px}
+      .map-road-v{left:50%}
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div id="toast" class="toast"></div>
+
+    <!-- SCREEN 1 -->
+    <section class="screen active" id="screen-1">
+      <div class="topbar">
+        <div class="logo">НетворкингСити</div>
+      </div>
+      <div class="hero">
+        <div>
+          <div class="subtitle">Интерактивный курс-симулятор</div>
+          <h1 class="title">НетворкингСити: свои везде</h1>
+          <p class="subtitle">От неловких знакомств до работающих связей</p>
+          <button class="btn" onclick="goTo(2)">Прокачать</button>
+        </div>
+        <div class="hero-art">
+          <div class="building b1"></div>
+          <div class="building b2"></div>
+          <div class="building b3"></div>
+          <div class="road"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 2 -->
+    <section class="screen" id="screen-2">
+      <div class="topbar">
+        <div class="logo">НетворкингСити</div>
+      </div>
+      <div class="content">
+        <div class="welcome-layout">
+          <div class="panel">
+            <h2>Добро пожаловать в НетворкингСити!</h2>
+            <p><strong>Добро пожаловать в СимСити!</strong> Здесь ты сможешь стать гуру нетворкинга.</p>
+            <p>
+              Конференции, фестивали, выставки, показы вызывают у тебя мучительное
+              «Эх, сегодня придётся общаться со всеми этими людьми»?
+              Давай превратим этот "социальный ужас" в поле для интересных событий,
+              чтобы чувствовать себя “своим” в любой среде.
+            </p>
+            <p>Ты научишься:</p>
+            <ul class="bullets">
+              <li>Легко начинать разговор на мероприятиях</li>
+              <li>Кратко и понятно рассказывать о себе</li>
+              <li>Поддерживать контакты после первой встречи</li>
+              <li>Выстраивать экологичные, взаимовыгодные связи</li>
+            </ul>
+            <p><strong>Готов стать воплощением харизмы?</strong></p>
+            <button class="btn secondary" onclick="goTo(3)">Готов</button>
+          </div>
+          <div class="panel" style="display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#eef8ff,#f4efff)">
+            <div style="text-align:center;max-width:420px">
+              <div style="font-size:84px;margin-bottom:10px">🌆✨</div>
+              <h3>Город знакомств и возможностей</h3>
+              <p class="small">Каждое решение влияет на уровень нетворкинга, репутацию и финал истории.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 3 -->
+    <section class="screen" id="screen-3">
+      <div class="topbar">
+        <div class="logo">НетворкингСити</div>
+      </div>
+      <div class="content">
+        <div class="panel" style="margin-bottom:18px">
+          <h2>Комната Златы</h2>
+          <p>
+            Привет! Знакомься, это Злата! Утро началось, птички поют, пора выдвигаться на работу.
+            Бери ключи от машины и в путь!
+          </p>
+          <p class="small">Мини-игра: найди ключи на тумбочке.</p>
+        </div>
+
+        <div class="room-scene">
+          <div class="wall-line"></div>
+          <div class="window"></div>
+          <div class="bed"></div>
+          <div class="dresser"></div>
+          <div class="keys-vis"></div>
+          <div class="carpet-toy"></div>
+          <div class="floor-rug"></div>
+
+          <div class="character">
+            <div class="hair"></div>
+            <div class="head"></div>
+            <div class="body"></div>
+            <div class="legs"></div>
+          </div>
+
+          <div class="click-zone keys-zone" title="Ключи" onclick="findKeys()"></div>
+
+          <div class="hint" style="position:absolute;left:24px;bottom:24px">
+            Нажми на ключи на тумбочке
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 4 -->
+    <section class="screen" id="screen-4">
+      <div class="topbar">
+        <div class="logo">Карта города</div>
+        <div class="stats" id="hud-1"></div>
+      </div>
+      <div class="content">
+        <div class="panel" style="margin-bottom:16px">
+          <h2>Карта</h2>
+          <p>Выбери локацию <strong>«Офис»</strong>.</p>
+        </div>
+        <div class="map-scene">
+          <div class="map-road-h"></div>
+          <div class="map-road-v"></div>
+
+          <div class="plot park">Парк</div>
+          <div class="plot office">Офис</div>
+          <div class="plot home">Дом</div>
+          <div class="plot hall">Конференц-холл</div>
+
+          <div class="marker" style="right:210px;top:140px" title="Офис" onclick="goTo(5)"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 5 -->
+    <section class="screen" id="screen-5">
+      <div class="topbar">
+        <div class="logo">Утро, офис</div>
+        <div class="stats" id="hud-2"></div>
+      </div>
+      <div class="content">
+        <div class="office-layout">
+          <div class="office-scene">
+            <div class="office-window"></div>
+            <div class="desk"></div>
+            <div class="chair"></div>
+            <div class="boss">
+              <div class="hair"></div>
+              <div class="head"></div>
+              <div class="body"></div>
+              <div class="legs"></div>
+            </div>
+          </div>
+          <div class="panel">
+            <h2>Что ты решишь?</h2>
+            <p>
+              Начальник вызвал Злату и сообщил о конференции в другом городе.
+              В голове пронеслась мысль: «Я же не умею знакомиться…».
+            </p>
+            <div class="choices">
+              <button class="btn secondary" onclick="acceptConference()">Согласиться</button>
+              <button class="btn warn" onclick="declineConference()">Отказаться</button>
+            </div>
+
+            <div id="warningArea"></div>
+            <div id="relationArea"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 6 -->
+    <section class="screen" id="screen-6">
+      <div class="topbar">
+        <div class="logo">Твои решения влияют на финал</div>
+        <div class="stats" id="hud-3"></div>
+      </div>
+      <div class="content">
+        <div class="panel">
+          <h2>Твои решения влияют на финал</h2>
+          <div class="metrics">
+            <div class="metric">
+              <div class="icon">📈</div>
+              <div>Уровень «Нетворкинг»</div>
+              <strong id="netValue">0%</strong>
+              <p class="small">Показывает, насколько развился твой навык нетворкинга. Цель игры — довести его до 100.</p>
+            </div>
+            <div class="metric">
+              <div class="icon">🤝</div>
+              <div>Очки «Знакомства»</div>
+              <strong id="contactValue">0</strong>
+              <p class="small">Количество знакомств, которые ты успешно завёл в игре.</p>
+            </div>
+            <div class="metric">
+              <div class="icon">⭐</div>
+              <div>Очки «Бренд»</div>
+              <strong id="brandValue">0</strong>
+              <p class="small">Насколько ты прокачал свой профиль, насколько ты известен и узнаваем.</p>
+            </div>
+          </div>
+          <button class="btn" onclick="goTo(7)">Как это влияет на финал</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 7 -->
+    <section class="screen" id="screen-7">
+      <div class="topbar">
+        <div class="logo">Судьба персонажа</div>
+        <div class="stats" id="hud-4"></div>
+      </div>
+      <div class="content">
+        <div class="panel">
+          <h2>Судьба персонажа</h2>
+          <p>В зависимости от твоих решений судьба персонажа может быть разной.</p>
+
+          <div class="cards">
+            <div class="flip" onclick="this.classList.toggle('flipped')">
+              <div class="flip-inner">
+                <div class="flip-side flip-front">
+                  <div style="font-size:54px">🙈</div>
+                  <h3>Судьба 1</h3>
+                  <p>Нажми, чтобы перевернуть</p>
+                </div>
+                <div class="flip-side flip-back">
+                  <h3>Стесняшка</h3>
+                  <p>Заведено 1 знакомство</p>
+                  <p>2 очка «Бренда»</p>
+                  <p>20% уровень нетворкинга</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="flip" onclick="this.classList.toggle('flipped')">
+              <div class="flip-inner">
+                <div class="flip-side flip-front">
+                  <div style="font-size:54px">🌟</div>
+                  <h3>Судьба 2</h3>
+                  <p>Нажми, чтобы перевернуть</p>
+                </div>
+                <div class="flip-side flip-back">
+                  <h3>Местная звезда</h3>
+                  <p>Заведено 4 знакомства</p>
+                  <p>5 очков «Бренда»</p>
+                  <p>50% уровень нетворкинга</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="flip" onclick="this.classList.toggle('flipped')">
+              <div class="flip-inner">
+                <div class="flip-side flip-front">
+                  <div style="font-size:54px">👑</div>
+                  <h3>Судьба 3</h3>
+                  <p>Нажми, чтобы перевернуть</p>
+                </div>
+                <div class="flip-side flip-back">
+                  <h3>Мисс популярность</h3>
+                  <p>Заведено 8 знакомств</p>
+                  <p>10 очков «Бренда»</p>
+                  <p>100% уровень нетворкинга</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <p style="margin-top:20px"><strong>Какая будет судьба — решать тебе.</strong></p>
+          <button class="btn secondary" onclick="goTo(8)">Решить судьбу</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 8 -->
+    <section class="screen" id="screen-8">
+      <div class="topbar">
+        <div class="logo">Карта города</div>
+        <div class="stats" id="hud-5"></div>
+      </div>
+      <div class="content">
+        <div class="panel" style="margin-bottom:16px">
+          <h2>Карта города</h2>
+          <p>Выбери индикатор <strong>«Домой»</strong>.</p>
+        </div>
+        <div class="map-scene">
+          <div class="map-road-h"></div>
+          <div class="map-road-v"></div>
+
+          <div class="plot park">Парк</div>
+          <div class="plot office">Офис</div>
+          <div class="plot home">Домой</div>
+          <div class="plot hall">Конференц-холл</div>
+
+          <div class="marker" style="left:180px;bottom:130px" title="Домой" onclick="goTo(9)"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 9 -->
+    <section class="screen" id="screen-9">
+      <div class="topbar">
+        <div class="logo">Настрой на нетворкинг</div>
+        <div class="stats" id="hud-6"></div>
+      </div>
+      <div class="content">
+        <div class="room-scene laptop-room">
+          <div class="thought">
+            У меня не очень хорошо получается заводить знакомства. Точнее, вообще не получается.
+            Надо как-то подготовиться. Кажется, у меня сохранилась презентация с мастер-класса по нетворкингу.
+          </div>
+
+          <div class="wall-line"></div>
+          <div class="window"></div>
+          <div class="bed"></div>
+          <div class="table"></div>
+          <div class="laptop"></div>
+          <div class="floor-rug"></div>
+
+          <div class="character" style="left:110px;bottom:110px">
+            <div class="hair"></div>
+            <div class="head"></div>
+            <div class="body" style="background:#9cbbff"></div>
+            <div class="legs"></div>
+          </div>
+
+          <div class="click-zone laptop-zone" title="Ноутбук" onclick="goTo(10)"></div>
+          <div class="hint" style="position:absolute;right:24px;bottom:24px">
+            Нажми на ноутбук
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 10 -->
+    <section class="screen" id="screen-10">
+      <div class="topbar">
+        <div class="logo">Колесо баланса контактов</div>
+        <div class="stats" id="hud-7"></div>
+      </div>
+      <div class="content">
+        <div class="balance-layout">
+          <div class="wheel-wrap">
+            <svg id="wheelSvg" width="100%" viewBox="0 0 420 420"></svg>
+          </div>
+
+          <div class="panel">
+            <h2>Окно «Колесо баланса»</h2>
+            <p id="currentPrompt">
+              Прочитай название сферы и подумай: «Есть ли у меня люди, к которым я могу обратиться в этой области?
+              Те, кто ответит на сообщение, поможет советом или познакомит с нужным человеком?»
+            </p>
+
+            <div class="hint" style="margin-bottom:14px">
+              Сейчас оцениваем: <strong id="currentCategoryLabel">Карьера</strong>
+            </div>
+
+            <div class="scale-buttons" id="scoreButtons"></div>
+
+            <div class="legend">
+              <strong>Как ставить балл:</strong><br><br>
+              <strong>1–2</strong> — Контактов почти нет. Если что-то понадобится — не знаю, к кому обратиться<br>
+              <strong>3–4</strong> — Есть пара человек, но связь слабая — не уверен(а), что ответят<br>
+              <strong>5–6</strong> — Есть несколько знакомых, иногда общаемся, но не системно<br>
+              <strong>7–8</strong> — Есть надёжные контакты, могу обратиться и получить помощь<br>
+              <strong>9–10</strong> — Сильная сеть: несколько человек, активная связь, взаимная польза
+            </div>
+
+            <div class="footer-actions">
+              <button class="btn" id="doneBalanceBtn" style="display:none" onclick="prepareResult()">Готово</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 11 -->
+    <section class="screen" id="screen-11">
+      <div class="topbar">
+        <div class="logo">Твоё колесо баланса</div>
+        <div class="stats" id="hud-8"></div>
+      </div>
+      <div class="content">
+        <div class="final-layout">
+          <div class="wheel-wrap">
+            <svg id="resultWheelSvg" width="100%" viewBox="0 0 420 420"></svg>
+          </div>
+          <div class="panel">
+            <h2>Твоё колесо баланса</h2>
+            <p>
+              На конференции имеет смысл искать людей, связанных со сферами:
+            </p>
+            <div class="tag-list" id="topSectors"></div>
+
+            <div class="footer-actions">
+              <button class="btn secondary" onclick="restartCourse()">Пройти заново</button>
+              <button class="btn ghost" onclick="goTo(1)">На обложку</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const state = {
+      networking: 0,
+      brand: 0,
+      contacts: 0,
+      openness: 0,
+      characterName: 'Злата',
+      wheelValues: {
+        'Карьера': 0,
+        'Образование': 0,
+        'Хобби': 0,
+        'Личные проекты': 0,
+        'Финансы': 0,
+        'Здоровье': 0
+      }
+    };
+
+    const categories = [
+      { name:'Карьера', color:'#5e9cff', emoji:'💼' },
+      { name:'Образование', color:'#72d6c9', emoji:'🏫' },
+      { name:'Хобби', color:'#ffd166', emoji:'🎨' },
+      { name:'Личные проекты', color:'#c39bff', emoji:'📁' },
+      { name:'Финансы', color:'#7ed957', emoji:'💸' },
+      { name:'Здоровье', color:'#ff8fab', emoji:'🩺' }
+    ];
+
+    let currentCategoryIndex = 0;
+
+    function goTo(n){
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(`screen-${n}`).classList.add('active');
+      renderHUD();
+      if(n === 6) updateMetrics();
+      if(n === 10){
+        currentCategoryIndex = findNextUnfilledCategoryIndex();
+        updateCurrentCategoryLabel();
+        renderScoreButtons();
+        renderWheel('wheelSvg', state.wheelValues, currentCategoryIndex);
+      }
+      if(n === 11){
+        renderWheel('resultWheelSvg', state.wheelValues, -1);
+        renderTopSectors();
+      }
+      window.scrollTo({top:0, behavior:'smooth'});
+    }
+
+    function showToast(text, type=''){
+      const toast = document.getElementById('toast');
+      toast.textContent = text;
+      toast.className = `toast show ${type}`;
+      setTimeout(() => {
+        toast.className = 'toast';
+      }, 1700);
+    }
+
+    function renderHUD(){
+      const html = `
+        <div class="stat">📈 Нетворкинг: <strong>${state.networking}%</strong></div>
+        <div class="stat">🤝 Знакомства: <strong>${state.contacts}</strong></div>
+        <div class="stat">⭐ Бренд: <strong>${state.brand}</strong></div>
+      `;
+      ['hud-1','hud-2','hud-3','hud-4','hud-5','hud-6','hud-7','hud-8'].forEach(id=>{
+        const el = document.getElementById(id);
+        if(el) el.innerHTML = html;
+      });
+    }
+
+    function findKeys(){
+      showToast('Ключи найдены!', 'good');
+      setTimeout(() => goTo(4), 500);
+    }
+
+    function acceptConference(){
+      state.networking = Math.min(100, state.networking + 1);
+      state.openness = 1;
+      showToast('+1 Нетворкинг', 'good');
+      setTimeout(() => goTo(6), 500);
+    }
+
+    function declineConference(){
+      state.networking = Math.max(0, state.networking - 1);
+      showToast('-1 Нетворкинг', 'bad');
+
+      const warningArea = document.getElementById('warningArea');
+      const relationArea = document.getElementById('relationArea');
+
+      if(state.openness === 0){
+        warningArea.innerHTML = `
+          <div class="warning-box">
+            <p><strong>Имей в виду, твой выбор влияет на финал истории и на то, как люди воспринимают ${state.characterName}.</strong></p>
+            <button class="btn ghost" onclick="showRelationScene()">Учесть</button>
+          </div>
+        `;
+      } else {
+        goTo(6);
+      }
+
+      relationArea.innerHTML = '';
+    }
+
+    function showRelationScene(){
+      const warningArea = document.getElementById('warningArea');
+      const relationArea = document.getElementById('relationArea');
+      warningArea.innerHTML = '';
+      relationArea.innerHTML = `
+        <div class="relation-box">
+          <div class="relation-meter"><span></span></div>
+          <p>
+            Начальник нахмурился и повысив голос, отчитал Егора:
+            — Что за детский сад? Ты вообще понимаешь, как это выглядит?
+            Там будут люди, которые решают, с кем работать в следующем году.
+            На встрече хотят видеть тебя как профильного специалиста.
+            Твоя задача — познакомиться, рассказать, что мы умеем, завести связи.
+            Когда ты отказываешься, я выгляжу человеком, на которого нельзя положиться.
+            Я не прошу тебя “подвиг совершить”.
+            Так что давай так: ты едешь в командировку, мы закрываем эту историю. Договорились?
+          </p>
+          <button class="btn secondary" onclick="goTo(6)">Дальше</button>
+        </div>
+      `;
+    }
+
+    function updateMetrics(){
+      document.getElementById('netValue').textContent = `${state.networking}%`;
+      document.getElementById('contactValue').textContent = `${state.contacts}`;
+      document.getElementById('brandValue').textContent = `${state.brand}`;
+    }
+
+    function renderScoreButtons(){
+      const wrap = document.getElementById('scoreButtons');
+      wrap.innerHTML = '';
+      for(let i=1;i<=10;i++){
+        const btn = document.createElement('button');
+        btn.className = 'score-btn';
+        btn.textContent = i;
+        btn.onclick = () => setCategoryScore(i);
+        wrap.appendChild(btn);
+      }
+    }
+
+    function setCategoryScore(score){
+      const cat = categories[currentCategoryIndex];
+      state.wheelValues[cat.name] = score;
+
+      currentCategoryIndex = findNextUnfilledCategoryIndex();
+
+      if(currentCategoryIndex === -1){
+        document.getElementById('doneBalanceBtn').style.display = 'inline-block';
+        document.getElementById('currentCategoryLabel').textContent = 'Все сферы заполнены';
+        showToast(`Сегмент заполнен: ${cat.name} — ${score}`, 'good');
+        renderWheel('wheelSvg', state.wheelValues, -1);
+      } else {
+        showToast(`Сегмент заполнен: ${cat.name} — ${score}`, 'good');
+        updateCurrentCategoryLabel();
+        renderWheel('wheelSvg', state.wheelValues, currentCategoryIndex);
+      }
+    }
+
+    function updateCurrentCategoryLabel(){
+      if(currentCategoryIndex >= 0){
+        document.getElementById('currentCategoryLabel').textContent = categories[currentCategoryIndex].name;
+      }
+    }
+
+    function findNextUnfilledCategoryIndex(){
+      return categories.findIndex(c => !state.wheelValues[c.name]);
+    }
+
+    function polar(cx, cy, r, angle){
+      const rad = (angle - 90) * Math.PI / 180;
+      return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
+    }
+
+    function sectorPath(cx, cy, r1, r2, startAngle, endAngle){
+      const p1 = polar(cx, cy, r2, startAngle);
+      const p2 = polar(cx, cy, r2, endAngle);
+      const p3 = polar(cx, cy, r1, endAngle);
+      const p4 = polar(cx, cy, r1, startAngle);
+      const largeArc = endAngle - startAngle <= 180 ? 0 : 1;
+      return [
+        `M ${p1.x} ${p1.y}`,
+        `A ${r2} ${r2} 0 ${largeArc} 1 ${p2.x} ${p2.y}`,
+        `L ${p3.x} ${p3.y}`,
+        `A ${r1} ${r1} 0 ${largeArc} 0 ${p4.x} ${p4.y}`,
+        'Z'
+      ].join(' ');
+    }
+
+    function renderWheel(svgId, values, activeIndex = -1){
+      const svg = document.getElementById(svgId);
+      const cx = 210, cy = 210;
+      const maxR = 150;
+      const innerR = 24;
+      const step = (maxR - innerR) / 10;
+      svg.innerHTML = '';
+
+      for(let i=1;i<=10;i++){
+        const r = innerR + step * i;
+        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        circle.setAttribute('cx', cx);
+        circle.setAttribute('cy', cy);
+        circle.setAttribute('r', r);
+        circle.setAttribute('fill', 'none');
+        circle.setAttribute('stroke', i === 10 ? '#d7e4ff' : '#e8f0ff');
+        circle.setAttribute('stroke-width', '1');
+        svg.appendChild(circle);
+      }
+
+      for(let i=0;i<6;i++){
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        const angle = i * 60;
+        const p = polar(cx, cy, maxR + 10, angle);
+        line.setAttribute('x1', cx);
+        line.setAttribute('y1', cy);
+        line.setAttribute('x2', p.x);
+        line.setAttribute('y2', p.y);
+        line.setAttribute('stroke', '#d7e4ff');
+        line.setAttribute('stroke-width', '1.5');
+        svg.appendChild(line);
+      }
+
+      categories.forEach((cat, i) => {
+        const start = i * 60;
+        const end = start + 60;
+        const value = values[cat.name] || 0;
+        const r2 = innerR + step * value;
+
+        if(value > 0){
+          const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          path.setAttribute('d', sectorPath(cx, cy, innerR, r2, start, end));
+          path.setAttribute('fill', cat.color);
+          path.setAttribute('fill-opacity', activeIndex === i ? '0.92' : '0.78');
+          path.setAttribute('stroke', '#ffffff');
+          path.setAttribute('stroke-width', '2');
+          svg.appendChild(path);
+        }
+
+        if(activeIndex === i){
+          const ring = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          ring.setAttribute('d', sectorPath(cx, cy, innerR, maxR, start, end));
+          ring.setAttribute('fill', 'none');
+          ring.setAttribute('stroke', cat.color);
+          ring.setAttribute('stroke-width', '4');
+          ring.setAttribute('stroke-dasharray', '8 6');
+          svg.appendChild(ring);
+        }
+
+        const labelPos = polar(cx, cy, maxR + 34, start + 30);
+        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        text.setAttribute('x', labelPos.x);
+        text.setAttribute('y', labelPos.y);
+        text.setAttribute('font-size', '13');
+        text.setAttribute('font-weight', activeIndex === i ? '800' : '700');
+        text.setAttribute('fill', '#425b8f');
+        text.setAttribute('text-anchor', 'middle');
+        text.textContent = cat.name;
+        svg.appendChild(text);
+
+        const scoreText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        const scorePos = polar(cx, cy, Math.max(innerR + 14, innerR + step * Math.max(1, value) - 10), start + 30);
+        scoreText.setAttribute('x', scorePos.x);
+        scoreText.setAttribute('y', scorePos.y);
+        scoreText.setAttribute('font-size', '13');
+        scoreText.setAttribute('font-weight', '800');
+        scoreText.setAttribute('fill', '#24324a');
+        scoreText.setAttribute('text-anchor', 'middle');
+        scoreText.textContent = value > 0 ? value : '';
+        svg.appendChild(scoreText);
+      });
+
+      const center = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      center.setAttribute('cx', cx);
+      center.setAttribute('cy', cy);
+      center.setAttribute('r', innerR);
+      center.setAttribute('fill', '#ffffff');
+      center.setAttribute('stroke', '#dbe7ff');
+      center.setAttribute('stroke-width', '2');
+      svg.appendChild(center);
+    }
+
+    function prepareResult(){
+      const vals = Object.values(state.wheelValues);
+      const avg = vals.reduce((a,b)=>a+b,0) / vals.length;
+
+      state.networking = Math.min(100, Math.round(avg * 10));
+      state.contacts = Math.max(state.contacts, Math.round(avg / 1.5));
+      state.brand = Math.max(state.brand, Math.round(avg));
+
+      goTo(11);
+    }
+
+    function renderTopSectors(){
+      const max = Math.max(...Object.values(state.wheelValues));
+      const top = categories.filter(c => state.wheelValues[c.name] === max);
+      const container = document.getElementById('topSectors');
+
+      container.innerHTML = '';
+      top.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'tag';
+        div.innerHTML = `
+          <div class="emoji">${item.emoji}</div>
+          <div>${item.name}</div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function restartCourse(){
+      state.networking = 0;
+      state.brand = 0;
+      state.contacts = 0;
+      state.openness = 0;
+      state.wheelValues = {
+        'Карьера': 0,
+        'Образование': 0,
+        'Хобби': 0,
+        'Личные проекты': 0,
+        'Финансы': 0,
+        'Здоровье': 0
+      };
+      currentCategoryIndex = 0;
+      document.getElementById('warningArea').innerHTML = '';
+      document.getElementById('relationArea').innerHTML = '';
+      document.getElementById('doneBalanceBtn').style.display = 'none';
+      renderHUD();
+      goTo(1);
+    }
+
+    renderHUD();
+  </script>
+</body>
+</html>
