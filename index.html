@@ -1304,39 +1304,6 @@ color: #1e293b;
   font-weight: 600;
   font-feature-settings: "tnum" 1;
 }
-    #wheelSvg text,
-#resultWheelSvg text {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-}
-
-.seg-level-buttons {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 6px;
-}
-
-.seg-level-buttons button {
-  padding: 8px 4px;
-  font-size: 13px;
-  font-weight: 700;
-  border-radius: 10px;
-  border: 1px solid #cbd5e1;
-  background: #ffffff;
-  color: var(--text-soft);
-  cursor: pointer;
-  transition: all .15s ease;
-}
-
-.seg-level-buttons button:hover {
-  background: #f1f5f9;
-  transform: translateY(-1px);
-}
-
-.seg-level-buttons button.active {
-  border-color: rgba(34, 197, 94, 0.9);
-  background: rgba(34, 197, 94, 0.15);
-  color: #166534;
-}
   </style>
 </head>
 <body>
@@ -2018,11 +1985,38 @@ color: #1e293b;
               <span class="tagline">Экран 14 • Колесо баланса контактов</span>
             </div>
             <div class="scene-main">
-             <div class="scene-main">
-  <div class="wheel-wrapper" style="width:100%; height:100%; border-radius:14px; background:none; border:none; box-shadow:none;">
-    <svg id="wheelSvg" width="100%" viewBox="0 0 420 420"></svg>
-  </div>
-</div>
+              <div class="wheel-wrapper">
+                <!-- SVG-колесо -->
+                <svg class="wheel-svg" viewBox="0 0 100 100">
+                  <circle cx="50" cy="50" r="49" fill="#f8fafc" stroke="#cbd5e1" stroke-width="0.5"></circle>
+                  <g id="wheel-sectors">
+                    <path id="sector-0" class="wheel-sector" fill="#22c55e"
+                          d="M50 50 L50 3 A47 47 0 0 1 89.27 23.5 Z"></path>
+                    <path id="sector-1" class="wheel-sector" fill="#38bdf8"
+                          d="M50 50 L89.27 23.5 A47 47 0 0 1 89.27 76.5 Z"></path>
+                    <path id="sector-2" class="wheel-sector" fill="#f97316"
+                          d="M50 50 L89.27 76.5 A47 47 0 0 1 50 97 Z"></path>
+                    <path id="sector-3" class="wheel-sector" fill="#e11d48"
+                          d="M50 50 L50 97 A47 47 0 0 1 10.73 76.5 Z"></path>
+                    <path id="sector-4" class="wheel-sector" fill="#a855f7"
+                          d="M50 50 L10.73 76.5 A47 47 0 0 1 10.73 23.5 Z"></path>
+                    <path id="sector-5" class="wheel-sector" fill="#facc15"
+                          d="M50 50 L10.73 23.5 A47 47 0 0 1 50 3 Z"></path>
+                  </g>
+                  <!-- кольца уровней -->
+                  <circle cx="50" cy="50" r="9" class="wheel-level-ring"></circle>
+                  <circle cx="50" cy="50" r="17" class="wheel-level-ring"></circle>
+                  <circle cx="50" cy="50" r="25" class="wheel-level-ring"></circle>
+                  <circle cx="50" cy="50" r="33" class="wheel-level-ring"></circle>
+                  <circle cx="50" cy="50" r="41" class="wheel-level-ring"></circle>
+                  <circle cx="50" cy="50" r="49" class="wheel-level-ring"></circle>
+                </svg>
+                <div class="wheel-sector-labels" id="wheel-center-label">
+                  Карьера
+                </div>
+              </div>
+            </div>
+          </div>
           <div class="panel">
             <div class="panel-tag">Теория</div>
             <h2>Колесо баланса контактов</h2>
@@ -2042,16 +2036,21 @@ color: #1e293b;
               <li><strong>9–10</strong> — сильная сеть: активная связь, взаимная польза</li>
             </ul>
 
- <div class="seg-control">
-  <div class="seg-control-title">
-    Сейчас оцениваем: <strong id="current-seg-name">Карьера</strong>
-  </div>
-  <div class="seg-level-buttons" id="seg-level-buttons"></div>
-</div>
-...
-<div class="actions-row" style="margin-top: 6px;">
-  <button class="btn" id="btn-wheel-finish" style="display:none;" data-next="screen-15">Готово</button>
-</div>
+            <div class="seg-control">
+              <div class="seg-control-title">
+                Текущая сфера: <span id="current-seg-name">Карьера</span>
+              </div>
+              <div class="seg-level-buttons" id="seg-level-buttons"></div>
+            </div>
+
+            <p class="note">
+              Сферы по очереди: Карьера, Образование, Хобби, Личные проекты, Финансы, Здоровье.
+            </p>
+
+            <div class="actions-row" style="margin-top: 6px;">
+              <button class="btn" id="btn-wheel-next" disabled>Перейти к следующей сфере</button>
+              <button class="btn secondary" id="btn-wheel-finish" style="display:none;" data-next="screen-15">Готово</button>
+            </div>
           </div>
         </div>
       </div>
@@ -2064,11 +2063,12 @@ color: #1e293b;
             <div class="scene-header">
               <span class="tagline">Экран 15 • Твоё колесо баланса</span>
             </div>
-           <div class="scene-main">
-  <div class="wheel-wrapper" style="width:100%; height:100%; border-radius:14px; background:none; border:none; box-shadow:none;">
-    <svg id="resultWheelSvg" width="100%" viewBox="0 0 420 420"></svg>
-  </div>
-</div>
+            <div class="scene-main">
+              <div class="fake-illustration" id="wheel-summary">
+                Здесь отображается заполненное тобой колесо баланса (используются данные с прошлого экрана).
+              </div>
+            </div>
+          </div>
           <div class="panel">
             <div class="panel-tag">Теория</div>
             <h2>Твоё колесо баланса</h2>
@@ -3214,235 +3214,83 @@ color: #1e293b;
     });
   }
 
- // ===== SVG-колесо: вспомогательные функции =====
-const wheelCategories = [
-  { name:'Карьера',          color:'#22c55e', emoji:'💼' },
-  { name:'Образование',      color:'#38bdf8', emoji:'🏫' },
-  { name:'Хобби',            color:'#f97316', emoji:'🎨' },
-  { name:'Личные проекты',   color:'#a855f7', emoji:'📁' },
-  { name:'Финансы',          color:'#facc15', emoji:'💸' },
-  { name:'Здоровье',         color:'#e11d48', emoji:'🩺' }
-];
+  // ===== Экран 14: колесо баланса =====
+  function initWheel() {
+    const segBtnContainer = document.getElementById('seg-level-buttons');
+    const currentSegName = document.getElementById('current-seg-name');
+    const wheelCenterLabel = document.getElementById('wheel-center-label');
+    const btnNext = document.getElementById('btn-wheel-next');
+    const btnFinish = document.getElementById('btn-wheel-finish');
 
-function polar(cx, cy, r, angle) {
-  const rad = (angle - 90) * Math.PI / 180;
-  return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
-}
-
-function sectorPath(cx, cy, r1, r2, startAngle, endAngle) {
-  const p1 = polar(cx, cy, r2, startAngle);
-  const p2 = polar(cx, cy, r2, endAngle);
-  const p3 = polar(cx, cy, r1, endAngle);
-  const p4 = polar(cx, cy, r1, startAngle);
-  const largeArc = endAngle - startAngle <= 180 ? 0 : 1;
-  return [
-    `M ${p1.x} ${p1.y}`,
-    `A ${r2} ${r2} 0 ${largeArc} 1 ${p2.x} ${p2.y}`,
-    `L ${p3.x} ${p3.y}`,
-    `A ${r1} ${r1} 0 ${largeArc} 0 ${p4.x} ${p4.y}`,
-    'Z'
-  ].join(' ');
-}
-
-function renderWheel(svgId, values, activeIndex) {
-  const svg = document.getElementById(svgId);
-  if (!svg) return;
-  const cx = 210, cy = 210;
-  const maxR = 150;
-  const innerR = 24;
-  const step = (maxR - innerR) / 10;
-  svg.innerHTML = '';
-
-  // Кольца уровней
-  for (let i = 1; i <= 10; i++) {
-    const r = innerR + step * i;
-    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-    circle.setAttribute('cx', cx);
-    circle.setAttribute('cy', cy);
-    circle.setAttribute('r', r);
-    circle.setAttribute('fill', 'none');
-    circle.setAttribute('stroke', i === 10 ? '#cbd5e1' : '#e2e8f0');
-    circle.setAttribute('stroke-width', '1');
-    svg.appendChild(circle);
-  }
-
-  // Разделительные линии
-  for (let i = 0; i < 6; i++) {
-    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    const angle = i * 60;
-    const p = polar(cx, cy, maxR + 10, angle);
-    line.setAttribute('x1', cx);
-    line.setAttribute('y1', cy);
-    line.setAttribute('x2', p.x);
-    line.setAttribute('y2', p.y);
-    line.setAttribute('stroke', '#e2e8f0');
-    line.setAttribute('stroke-width', '1.5');
-    svg.appendChild(line);
-  }
-
-  // Секторы и подписи
-  wheelCategories.forEach((cat, i) => {
-    const start = i * 60;
-    const end = start + 60;
-    const value = values[cat.name] || 0;
-    const r2 = innerR + step * value;
-
-    if (value > 0) {
-      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-      path.setAttribute('d', sectorPath(cx, cy, innerR, r2, start, end));
-      path.setAttribute('fill', cat.color);
-      path.setAttribute('fill-opacity', activeIndex === i ? '0.92' : '0.78');
-      path.setAttribute('stroke', '#ffffff');
-      path.setAttribute('stroke-width', '2');
-      svg.appendChild(path);
+    for (let i = 1; i <= 10; i++) {
+      const b = document.createElement('button');
+      b.textContent = i;
+      b.dataset.level = i;
+      segBtnContainer.appendChild(b);
     }
 
-    // Пунктир активного сектора
-    if (activeIndex === i) {
-      const ring = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-      ring.setAttribute('d', sectorPath(cx, cy, innerR, maxR, start, end));
-      ring.setAttribute('fill', 'none');
-      ring.setAttribute('stroke', cat.color);
-      ring.setAttribute('stroke-width', '4');
-      ring.setAttribute('stroke-dasharray', '8 6');
-      svg.appendChild(ring);
-    }
+    function updateSegmentUI() {
+      const idx = state.wheel.currentIndex;
+      const name = state.wheel.segments[idx];
+      const value = state.wheel.values[idx];
 
-    // Название сферы
-    const labelPos = polar(cx, cy, maxR + 34, start + 30);
-    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    text.setAttribute('x', labelPos.x);
-    text.setAttribute('y', labelPos.y);
-    text.setAttribute('font-size', '13');
-    text.setAttribute('font-weight', activeIndex === i ? '800' : '700');
-    text.setAttribute('fill', activeIndex === i ? cat.color : '#64748b');
-    text.setAttribute('text-anchor', 'middle');
-    text.textContent = cat.name;
-    svg.appendChild(text);
-
-    // Число-оценка внутри сектора
-    if (value > 0) {
-      const scorePos = polar(cx, cy, Math.max(innerR + 14, innerR + step * value - 10), start + 30);
-      const scoreText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-      scoreText.setAttribute('x', scorePos.x);
-      scoreText.setAttribute('y', scorePos.y);
-      scoreText.setAttribute('font-size', '13');
-      scoreText.setAttribute('font-weight', '800');
-      scoreText.setAttribute('fill', '#1e293b');
-      scoreText.setAttribute('text-anchor', 'middle');
-      scoreText.textContent = value;
-      svg.appendChild(scoreText);
-    }
-  });
-
-  // Центр
-  const center = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-  center.setAttribute('cx', cx);
-  center.setAttribute('cy', cy);
-  center.setAttribute('r', innerR);
-  center.setAttribute('fill', '#ffffff');
-  center.setAttribute('stroke', '#e2e8f0');
-  center.setAttribute('stroke-width', '2');
-  svg.appendChild(center);
-}
-
-// ===== Экран 14: колесо баланса (новое) =====
-function initWheel() {
-  const segBtnContainer = document.getElementById('seg-level-buttons');
-  const currentSegName = document.getElementById('current-seg-name');
-  const btnFinish = document.getElementById('btn-wheel-finish');
-
-  // Преобразуем state.wheel в формат {name: value}
-  function getWheelValues() {
-    const result = {};
-    wheelCategories.forEach((cat, i) => {
-      result[cat.name] = state.wheel.values[i] || 0;
-    });
-    return result;
-  }
-
-  // Найти следующую незаполненную сферу
-  function findNextUnfilled() {
-    return state.wheel.values.findIndex(v => v === 0);
-  }
-
-  // Создать кнопки 1–10
-  segBtnContainer.innerHTML = '';
-  for (let i = 1; i <= 10; i++) {
-    const b = document.createElement('button');
-    b.textContent = i;
-    b.dataset.level = i;
-    segBtnContainer.appendChild(b);
-  }
-
-  function updateUI() {
-    const idx = state.wheel.currentIndex;
-    const name = wheelCategories[idx].name;
-    const value = state.wheel.values[idx];
-
-    currentSegName.textContent = name;
-
-    segBtnContainer.querySelectorAll('button').forEach(btn => {
-      btn.classList.toggle('active', parseInt(btn.dataset.level, 10) === value);
-    });
-
-    renderWheel('wheelSvg', getWheelValues(), idx);
-
-    // Показать «Готово», если все заполнены
-    const allFilled = state.wheel.values.every(v => v > 0);
-    btnFinish.style.display = allFilled ? 'inline-flex' : 'none';
-  }
-
-  segBtnContainer.addEventListener('click', e => {
-    if (e.target.tagName !== 'BUTTON') return;
-    const lvl = parseInt(e.target.dataset.level, 10);
-    state.wheel.values[state.wheel.currentIndex] = lvl;
-
-    // Авто-переход к следующей незаполненной
-    const next = findNextUnfilled();
-    if (next !== -1) {
-      state.wheel.currentIndex = next;
-    }
-    // Если все заполнены — остаёмся на текущей
-
-    updateUI();
-  });
-
-  btnFinish.addEventListener('click', () => {
-    addNetworking(1);
-  });
-
-  // Начальная отрисовка
-  state.wheel.currentIndex = 0;
-  updateUI();
-}
-
-// ===== Экран 15: результат колеса (новое) =====
-function initWheelSummary() {
-  const topSectorsEl = document.getElementById('top-sectors');
-
-  const observer = new MutationObserver(() => {
-    if (document.getElementById('screen-15').classList.contains('active')) {
-      // Рисуем результат
-      const vals = {};
-      wheelCategories.forEach((cat, i) => {
-        vals[cat.name] = state.wheel.values[i] || 0;
+      currentSegName.textContent = name;
+      wheelCenterLabel.textContent = name;
+      document.querySelectorAll('.wheel-sector').forEach((p, i) => {
+        p.classList.toggle('active', i === idx);
       });
-      renderWheel('resultWheelSvg', vals, -1);
+      segBtnContainer.querySelectorAll('button').forEach(btn => {
+        btn.classList.toggle('active', parseInt(btn.dataset.level, 10) === value);
+      });
 
-      // Находим сферы с макс. баллом
-      const values = state.wheel.values;
-      const max = Math.max(...values);
-      const topIdxs = values.map((v, i) => v === max ? i : -1).filter(i => i >= 0);
-      topSectorsEl.textContent = topIdxs.map(i => wheelCategories[i].name).join(', ');
-
-      addNetworking(1);
+      btnNext.disabled = value === 0;
+      if (idx === state.wheel.segments.length - 1) {
+        btnNext.style.display = 'inline-flex';
+        btnNext.textContent = 'Оценить заново нельзя, но можно перейти дальше';
+        btnFinish.style.display = 'inline-flex';
+      } else {
+        btnNext.style.display = 'inline-flex';
+        btnNext.textContent = 'Перейти к следующей сфере';
+        btnFinish.style.display = 'none';
+      }
     }
-  });
-  observer.observe(document.getElementById('screen-container'), {
-    attributes: true, subtree: true, attributeFilter: ['class']
-  });
-}
+
+    segBtnContainer.addEventListener('click', e => {
+      if (e.target.tagName !== 'BUTTON') return;
+      const lvl = parseInt(e.target.dataset.level, 10);
+      state.wheel.values[state.wheel.currentIndex] = lvl;
+      updateSegmentUI();
+    });
+
+    btnNext.addEventListener('click', () => {
+      if (state.wheel.currentIndex < state.wheel.segments.length - 1) {
+        state.wheel.currentIndex++;
+        updateSegmentUI();
+      }
+    });
+
+    btnFinish.addEventListener('click', () => {
+      addNetworking(1);
+    });
+
+    updateSegmentUI();
+  }
+
+  // ===== Экран 15: вывод колеса =====
+  function initWheelSummary() {
+    const topSectorsEl = document.getElementById('top-sectors');
+
+    const observer = new MutationObserver(() => {
+      if (document.getElementById('screen-15').classList.contains('active')) {
+        const values = state.wheel.values;
+        const max = Math.max(...values);
+        const indexes = values.map((v, i) => v === max ? i : -1).filter(i => i >= 0);
+        topSectorsEl.textContent = indexes.map(i => state.wheel.segments[i]).join(', ');
+        addNetworking(1);
+      }
+    });
+    observer.observe(document.getElementById('screen-container'), { attributes: true, subtree: true, attributeFilter: ['class'] });
+  }
 
   // ===== Экран 16: перетаскивание человечков (прототип) =====
   function initPeopleDrag() {
