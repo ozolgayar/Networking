@@ -303,7 +303,7 @@
   background: rgba(34, 197, 94, 0.08);
   color: #166534;
   cursor: pointer;
-  display: flex;
+  display: none;
   flex-direction: column;
   gap: 2px;
   displaypx;
@@ -324,7 +324,7 @@
     }
 
     .goal-chip:hover {
-      background: rgba(6, 95, 70, .65);
+   background: rgba(34, 197, 94, 0.15);
     }
 
 #goal-popup {
@@ -338,13 +338,13 @@
 }
 
     #goal-popup .popup-content {
-      background: #020617;
+      background: #ffffff;
       border-radius: 18px;
       border: 1px solid rgba(34, 197, 94, 0.7);
       padding: 20px 22px;
       max-width: 360px;
       width: 90%;
-      box-shadow: 0 18px 60px rgba(0, 0, 0, .95);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
     }
 
     #goal-popup h2 {
@@ -373,18 +373,13 @@
 .close-btn:hover {
   background: #e2e8f0;
 }
-
-    .close-btn:hover {
-      background: rgba(31, 41, 55, 1);
-    }
-
     /* Основная сцена */
     #screen-container {
       flex: 1;
-      background: rgba(2, 6, 23, 0.96);
+    background: rgba(255, 255, 255, 0.96);
       border-radius: var(--radius-lg);
-      border: 1px solid rgba(30, 64, 175, 0.8);
-      box-shadow: 0 22px 60px rgba(15, 23, 42, 0.95);
+      border: 1px solid #cbd5e1;
+       box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
       padding: 18px 20px 18px 20px;
       position: relative;
       overflow: hidden;
@@ -431,7 +426,7 @@
     .scene {
       border-radius: var(--radius-md);
       border: 1px solid var(--border);
-      background: radial-gradient(circle at top, #1f2937, #020617);
+      background: linear-gradient(135deg, #f8fafc, #e2e8f0);
       position: relative;
       overflow: hidden;
       padding: 14px;
@@ -459,7 +454,7 @@
 .panel {
   border-radius: var(--radius-md);
   border: 1px solid var(--border);
-  background: radial-gradient(circle at top left, #111827, #020617);
+ background: linear-gradient(135deg, #ffffff, #f8fafc);
   padding: 24px 14px 12px; /* увеличили верхний паддинг с 12 до 24 */
   display: flex;
   flex-direction: column;
@@ -477,8 +472,8 @@
       padding: 4px 10px;
       font-size: 11px;
       border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.7);
-      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid #cbd5e1;
+      background: #f1f5f9;
       text-transform: uppercase;
       letter-spacing: 0.12em;
       color: var(--text-soft);
@@ -546,13 +541,13 @@
     }
 
     button.btn.secondary {
-      background: rgba(15, 23, 42, .95);
-      color: var(--text-soft);
-      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.9);
+  background: #f1f5f9;
+color: #475569;
+box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
     }
 
     button.btn.secondary:hover {
-      background: rgba(31, 41, 55, .95);
+      background: #e2e8f0;
     }
 
     button.btn.danger {
@@ -579,13 +574,13 @@
       bottom: 18px;
       left: 18px;
       max-width: 320px;
-      background: rgba(15, 23, 42, 0.85);
+     background: rgba(255, 255, 255, 0.92);
       border-radius: 14px;
       padding: 10px 12px;
       font-size: 13px;
       line-height: 1.3;
-      border: 1px solid rgba(148, 163, 184, 0.5);
-      color: #e5e7eb;
+      border: 1px solid #cbd5e1;
+      color: #1e293b;
     }
 
     .quote-author {
@@ -602,8 +597,8 @@
       font-size: 11px;
       padding: 4px 8px;
       border-radius: 999px;
-      background: rgba(15, 23, 42, .85);
-      border: 1px solid rgba(148, 163, 184, .6);
+     background: rgba(255, 255, 255, 0.9);
+     border: 1px solid #cbd5e1;
       text-transform: uppercase;
       letter-spacing: .1em;
       color: var(--text-soft);
@@ -613,7 +608,7 @@
     .modal-overlay {
       position: absolute;
       inset: 0;
-      background: rgba(15, 23, 42, 0.78);
+      background: rgba(148, 163, 184, 0.3);
       display: none;
       align-items: center;
       justify-content: center;
@@ -623,13 +618,13 @@
       display: flex;
     }
     .modal {
-      background: #020617;
+      background: #ffffff;
       border-radius: 16px;
-      border: 1px solid rgba(148, 163, 184, 0.6);
+      border: 1px solid #cbd5e1;
       max-width: 420px;
       width: 100%;
       padding: 16px 18px;
-      box-shadow: 0 18px 55px rgba(0, 0, 0, .9);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
       font-size: 14px;
       color: var(--text-soft);
     }
@@ -644,8 +639,8 @@
     textarea {
       width: 100%;
       border-radius: 10px;
-      border: 1px solid #1f2937;
-      background: #020617;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
       color: var(--text);
       padding: 8px 10px;
       font-size: 14px;
@@ -668,13 +663,7 @@
       height: 100%;
       border-radius: 14px;
       border: 1px dashed rgba(148, 163, 184, 0.6);
-      background: repeating-linear-gradient(
-        45deg,
-        rgba(30, 64, 175, 0.25) 0,
-        rgba(30, 64, 175, 0.25) 6px,
-        rgba(15, 23, 42, 0.8) 6px,
-        rgba(15, 23, 42, 0.8) 12px
-      );
+      background: repeating-linear-gradient(45deg, rgba(148,163,184,0.1) 0, rgba(148,163,184,0.1) 6px, rgba(248,250,252,0.8) 6px, rgba(248,250,252,0.8) 12px);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -703,7 +692,8 @@
       left: 50%;
       top: -22px;
       transform: translateX(-50%);
-      background: rgba(15, 23, 42, 0.95);
+      background: #ffffff;
+color: #1e293b;
       border-radius: 999px;
       padding: 3px 8px;
       font-size: 11px;
@@ -750,7 +740,7 @@
       justify-content: center;
       font-size: 12px;
       text-align: center;
-      color: #e5e7eb;
+      color: #1e293b;
       pointer-events: none;
     }
 
@@ -876,8 +866,8 @@
 
     .mask-card {
       border-radius: 14px;
-      border: 1px solid rgba(55, 65, 81, 0.9);
-      background: radial-gradient(circle at top, #020617, #020617);
+      border: 1px solid #cbd5e1;
+background: #ffffff;
       padding: 8px;
       min-height: 80px;
       display: flex;
@@ -887,7 +877,7 @@
     }
 
     .mask-card.flipped {
-      background: radial-gradient(circle at top, #0f172a, #020617);
+      background: #f8fafc;
       border-style: dashed;
     }
 
@@ -901,8 +891,8 @@
     .mask-input {
       flex: 1;
       border-radius: 8px;
-      border: 1px solid #1f2937;
-      background: #020617;
+      border: 1px solid #cbd5e1;
+background: #f8fafc;
       color: var(--text);
       padding: 4px 6px;
       font-size: 12px;
@@ -942,9 +932,9 @@
 
     .smart-field {
       border-radius: 10px;
-      border: 1px solid rgba(55, 65, 81, .9);
+      border: 1px solid #cbd5e1;
       padding: 6px 7px;
-      background: #020617;
+      background: #ffffff;
       display: flex;
       flex-direction: column;
       gap: 4px;
@@ -971,8 +961,8 @@
       min-width: 150px;
       max-width: 180px;
       border-radius: 14px;
-      border: 1px solid rgba(55, 65, 81, .9);
-      background: radial-gradient(circle at top, #0b1120, #020617);
+      border: 1px solid #cbd5e1;
+background: #ffffff;
       padding: 10px;
       font-size: 13px;
       display: flex;
@@ -1003,7 +993,7 @@
       height: 100%;
       border-radius: 14px;
       border: 1px dashed rgba(148, 163, 184, .65);
-      background: radial-gradient(circle at top, #1f2937, #020617);
+      background: linear-gradient(135deg, #f8fafc, #e2e8f0);
       position: relative;
       color: var(--text-soft);
       font-size: 13px;
@@ -1052,14 +1042,8 @@
     /* Стикеры/доска */
     .board {
       border-radius: 14px;
-      border: 1px dashed rgba(148, 163, 184, .7);
-      background: repeating-linear-gradient(
-        135deg,
-        rgba(15, 23, 42, 0.95) 0,
-        rgba(15, 23, 42, 0.95) 10px,
-        rgba(30, 64, 175, 0.4) 10px,
-        rgba(30, 64, 175, 0.4) 12px
-      );
+ background: repeating-linear-gradient(135deg, #f8fafc 0, #f8fafc 10px, rgba(148,163,184,0.15) 10px, rgba(148,163,184,0.15) 12px);
+border: 1px dashed #cbd5e1;
       padding: 8px;
       min-height: 120px;
       display: flex;
@@ -1133,8 +1117,9 @@
       position: absolute;
       padding: 3px 7px;
       border-radius: 999px;
-      background: rgba(15, 23, 42, 0.95);
-      border: 1px solid rgba(148, 163, 184, .8);
+      background: #ffffff;
+border: 1px solid #cbd5e1;
+color: #1e293b;
       font-size: 11px;
       transform: translate(-50%, -130%);
       white-space: nowrap;
@@ -2002,7 +1987,7 @@
               <div class="wheel-wrapper">
                 <!-- SVG-колесо -->
                 <svg class="wheel-svg" viewBox="0 0 100 100">
-                  <circle cx="50" cy="50" r="49" fill="#020617" stroke="#4b5563" stroke-width="0.5"></circle>
+                  <circle cx="50" cy="50" r="49" fill="#f8fafc" stroke="#cbd5e1" stroke-width="0.5"></circle>
                   <g id="wheel-sectors">
                     <path id="sector-0" class="wheel-sector" fill="#22c55e"
                           d="M50 50 L50 3 A47 47 0 0 1 89.27 23.5 Z"></path>
@@ -2260,7 +2245,7 @@
 
             <!-- Пул локаций -->
             <div style="font-size: 12px; color: var(--text-soft); margin-top: 8px;">Локации (перетащи в категорию):</div>
-            <div class="location-pool" id="location-pool" style="min-height: 80px; border-radius: 10px; border: 1px dashed rgba(148,163,184,0.5); background: rgba(15,23,42,0.5); padding: 8px; display: flex; flex-wrap: wrap; gap: 6px; align-content: flex-start; margin-top: 4px;">
+            <div class="location-pool" id="location-pool" style="min-height: 80px; border-radius: 10px; border: 1px dashed rgba(148,163,184,0.5); background: #f8fafc; padding: 8px; display: flex; flex-wrap: wrap; gap: 6px; align-content: flex-start; margin-top: 4px;">
             </div>
 
             <div class="actions-row" style="margin-top: 10px;">
