@@ -2070,8 +2070,7 @@ color: #1e293b;
         <div class="seg-level-buttons" id="seg-level-buttons"></div>
       </div>
       <div class="actions-row" style="margin-top: 6px;">
-        <button class="btn" id="btn-wheel-next" disabled>Следующая сфера</button>
-        <button class="btn secondary" id="btn-wheel-reset" style="display:none;">Оценить заново</button>
+            <button class="btn secondary" id="btn-wheel-reset" style="display:none;">Оценить заново</button>
         <button class="btn" id="btn-wheel-finish" style="display:none;">Готово</button>
       </div>
     </div>
@@ -2105,7 +2104,7 @@ color: #1e293b;
       </div>
       <div class="actions-row" style="margin-top:8px;">
         <button class="btn secondary nav-back" data-prev>Назад</button>
-        <button class="btn" data-next="screen-16">Продолжить</button>
+        <button class="btn" id="btn-screen15-continue" data-next="screen-16" style="display:none;">Продолжить</button>
       </div>
     </div>
   </div>
@@ -2282,7 +2281,7 @@ color: #1e293b;
                 </p>
                 <p class="note">+1 к уровню нетворкинга.</p>
                 <div class="actions-row" style="margin-top: 10px; justify-content: flex-end;">
-                  <button class="btn" data-next="screen-17" id="locations-continue">Продолжить</button>
+                 <button class="btn" id="locations-continue">Продолжить</button>
                 </div>
               </div>
             </div>
@@ -3343,8 +3342,7 @@ function renderWheel(svgId, values, activeIndex) {
 function initWheel() {
   const segBtnContainer = document.getElementById('seg-level-buttons');
   const currentSegName = document.getElementById('current-seg-name');
-  const btnNext = document.getElementById('btn-wheel-next');
-  const btnFinish = document.getElementById('btn-wheel-finish');
+   const btnFinish = document.getElementById('btn-wheel-finish');
   const btnReset = document.getElementById('btn-wheel-reset');
 
   function findNextUnfilled() {
@@ -3371,9 +3369,7 @@ function initWheel() {
     const allFilled = state.wheel.values.every(v => v > 0);
     btnFinish.style.display = allFilled ? 'inline-flex' : 'none';
     btnReset.style.display = allFilled ? 'inline-flex' : 'none';
-    btnNext.style.display = allFilled ? 'none' : 'inline-flex';
-    btnNext.disabled = value === 0;
-  }
+     }
 
   segBtnContainer.addEventListener('click', e => {
     if (e.target.tagName !== 'BUTTON') return;
@@ -3381,13 +3377,6 @@ function initWheel() {
     const next = findNextUnfilled();
     if (next !== -1) state.wheel.currentIndex = next;
     updateUI();
-  });
-
-  btnNext.addEventListener('click', () => {
-    if (state.wheel.currentIndex < state.wheel.segments.length - 1) {
-      state.wheel.currentIndex++;
-      updateUI();
-    }
   });
 
   // Готово — начисляем очки и переходим на экран 15
@@ -3447,6 +3436,7 @@ function initWheelSummary() {
       importance: state.wheel.importance[i],
       contacts: state.wheel.values[i],
       score: state.wheel.importance[i] * (11 - state.wheel.values[i])
+      document.getElementById('btn-screen15-continue').style.display = 'inline-flex';
     }));
 
     // Сортируем по убыванию score
@@ -3475,7 +3465,43 @@ function initWheelSummary() {
     attributes: true, subtree: true, attributeFilter: ['class']
   });
 }
+// ===== Экран 16: перетаскивание человечков =====
+function initPeopleDrag() {
+  const pool = document.getElementById('people-pool');
+  const target = document.getElementById('people-target');
+  for (let i = 0; i < 10; i++) {
+    const p = document.createElement('div');
+    p.className = 'person-token';
+    p.textContent = '🙂';
+    p.draggable = true;
+    pool.appendChild(p);
+  }
 
+  function allowDrop(e) { e.preventDefault(); }
+
+  function handleDrop(e, dest) {
+    e.preventDefault();
+    const dragging = document.querySelector('.person-token.dragging:not([data-part-id])');
+    if (dragging && dragging.parentElement !== dest) {
+      dest.appendChild(dragging);
+    }
+  }
+
+  [pool, target].forEach(el => { el.addEventListener('dragover', allowDrop); });
+  pool.addEventListener('drop', e => handleDrop(e, pool));
+  target.addEventListener('drop', e => handleDrop(e, target));
+
+  document.addEventListener('dragstart', e => {
+    if (e.target.classList.contains('person-token') && !e.target.dataset.partId) {
+      e.target.classList.add('dragging');
+    }
+  });
+  document.addEventListener('dragend', e => {
+    if (e.target.classList.contains('person-token') && !e.target.dataset.partId) {
+      e.target.classList.remove('dragging');
+    }
+  });
+}
   // ===== HUD цель Златы — появляется только с экрана 17 =====
   function initGoalHud() {
     const chip = document.getElementById('goal-chip');
@@ -3953,9 +3979,10 @@ function initWheelSummary() {
       if (e.target === modal) modal.classList.remove('active');
     });
 
-    btnContinue.addEventListener('click', () => {
-      modal.classList.remove('active');
-    });
+ btnContinue.addEventListener('click', () => {
+  modal.classList.remove('active');
+  showScreen('screen-17');
+});
   }
    document.addEventListener('DOMContentLoaded', () => {
     initGlobalNav();
