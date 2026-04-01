@@ -1366,6 +1366,56 @@ color: #1e293b;
   font-weight: 600;
   color: var(--accent-soft);
 }
+    /* Тест экрана 2 — скролл внутри сцены */
+#screen-2 .scene-main {
+  overflow-y: auto;
+  align-items: flex-start;
+}
+#screen-2 .scene-main::-webkit-scrollbar { width: 5px; }
+#screen-2 .scene-main::-webkit-scrollbar-thumb { background: rgba(148,163,184,0.4); border-radius: 999px; }
+
+.quiz-container { width: 100%; padding: 4px; }
+.quiz-q {
+  margin-bottom: 14px;
+  padding: 12px;
+  border-radius: 12px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  animation: fadeIn .3s ease-out;
+}
+.quiz-q h3 { font-size: 13px; color: var(--text); margin-bottom: 8px; }
+.quiz-q .quiz-options { display: flex; flex-direction: column; gap: 4px; }
+.quiz-q .quiz-opt {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  font-size: 12px;
+  cursor: pointer;
+  transition: .15s ease;
+  color: var(--text);
+}
+.quiz-q .quiz-opt:hover { background: #e2e8f0; }
+.quiz-q .quiz-opt.selected {
+  border-color: rgba(34,197,94,0.7);
+  background: rgba(34,197,94,0.12);
+  color: #166534;
+  font-weight: 600;
+  pointer-events: none;
+}
+.quiz-result {
+  padding: 14px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(34,197,94,0.08), rgba(56,189,248,0.08));
+  border: 1px solid rgba(34,197,94,0.3);
+  animation: fadeIn .4s ease-out;
+}
+.quiz-result h3 { color: var(--accent); margin-bottom: 6px; }
+.quiz-progress {
+  font-size: 11px;
+  color: var(--text-soft);
+  margin-bottom: 8px;
+}
   </style>
 </head>
 <body>
@@ -1471,31 +1521,8 @@ color: #1e293b;
               От неловких знакомств до работающих связей.
             </div>
             <p style="margin-top: 10px;">
-              Добро пожаловать в мир, где каждый разговор может стать началом нового проекта, дружбы или карьерного рывка.
+              Добро пожаловать в мир, где каждый разговор может стать началом нового проекта, дружбы или карьерного рывка!
             </p>
-                               <div class="actions-row" style="margin-top: auto;">
-              <button class="btn" data-next="screen-2">Прокачать</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Экран 2. Добро пожаловать -->
-      <div class="screen" id="screen-2">
-               <div class="screen-layout">
-          <div class="scene">
-            <div class="scene-header">
-              <span class="tagline">Экран 2 • Добро пожаловать в Нетворкинг Сити</span>
-            </div>
-            <div class="scene-main">
-              <div class="fake-illustration">
-                Окно-уведомление «Добро пожаловать в СимСити» в стилистике игры.
-              </div>
-            </div>
-          </div>
-          <div class="panel">
-            <div class="panel-tag">Теория</div>
-            <h2>Добро пожаловать в Нетворкинг Сити!</h2>
             <p>
               Конференции, фестивали, выставки, показы вызывают у тебя мучительное
               «Эх, сегодня придётся общаться со всеми этими людьми»?
@@ -1505,22 +1532,114 @@ color: #1e293b;
               чувствовать себя “своим” в любой среде. Ты научишься:
             </p>
             <ul>
-              <li>Легко начинать разговор на мероприятиях</li>
-              <li>Кратко и понятно рассказывать о себе</li>
-              <li>Поддерживать контакты после первой встречи</li>
-              <li>Выстраивать экологичные, взаимовыгодные связи</li>
+              <li>легко начинать разговор на мероприятиях</li>
+              <li>кратко и понятно рассказывать о себе</li>
+              <li>поддерживать контакты после первой встречи</li>
+              <li>выстраивать экологичные, взаимовыгодные связи</li>
             </ul>
             <p style="margin-top: 4px;">
               Готов стать воплощением харизмы?
             </p>
-         <div class="actions-row" style="justify-content: space-between;">
-  <button class="btn secondary nav-back" data-prev>Назад</button>
-  <button class="btn" data-next="screen-3">Готов</button>
-</div>
+                               <div class="actions-row" style="margin-top: auto;">
+              <button class="btn" data-next="screen-2">Готов!</button>
+            </div>
           </div>
         </div>
       </div>
 
+      <!-- Экран 2. Тест -->
+      <<div class="screen" id="screen-2">
+  <div class="screen-layout">
+    <div class="scene">
+      <div class="scene-header">
+        <span class="tagline">Экран 2 • Оцени свой нетворкинг</span>
+      </div>
+      <div class="scene-main">
+        <div class="quiz-container" id="quiz-container">
+          <div class="quiz-progress" id="quiz-progress">Вопрос 1 из 10</div>
+        </div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-tag">Тест</div>
+      <h2>Тест: твой уровень нетворкинга</h2>
+      <p>Ответь на 10 вопросов — узнаешь, насколько ты готов к эффективному нетворкингу.</p>
+      <p class="note">Вопросы появляются по одному. Выбери один вариант ответа.</p>
+      <div class="actions-row" style="justify-content: space-between; margin-top: auto;">
+        <button class="btn secondary nav-back" data-prev>Назад</button>
+        <button class="btn" id="btn-quiz-next" data-next="screen-3" style="display:none;">Продолжить</button>
+      </div>
+    </div>
+  </div>
+</div>
+        // ===== Экран 2: тест =====
+function initQuiz() {
+  const questions = [
+    { q: 'Я знаю, как найти общий язык с незнакомыми мне людьми.', opts: ['Не знаю','Не уверен','Примерно','Знаю','Знаю и буду применять на практике'] },
+    { q: 'Сможете ли вы знакомиться с несколькими новыми людьми?', opts: ['Не смогу','Не уверен','Возможно','Смогу','Смогу и начну это делать'] },
+    { q: 'Я знаю, как правильно и оригинально представиться незнакомому человеку.', opts: ['Не знаю','Не уверен','Примерно','Знаю','Знаю и буду применять на практике'] },
+    { q: 'Я смогу делать каждую неделю рассылку новостей и/или полезной информации списку своих знакомых.', opts: ['Не смогу','Не уверен','Возможно','Смогу','Смогу и начну это делать'] },
+    { q: 'Я знаю, насколько важно запоминать имя и ценности человека, с которым познакомился.', opts: ['Не знаю','Не уверен','Примерно','Знаю','Знаю и буду применять на практике'] },
+    { q: 'Я буду просить о помощи своих знакомых, когда в этом действительно нуждаюсь.', opts: ['Никогда','Редко','Иногда','Часто','Всегда'] },
+    { q: 'Я буду делиться своими контактами и знаниями со знакомыми и малознакомыми людьми, чтобы им помочь.', opts: ['Никогда','Редко','Иногда','Часто','Всегда'] },
+    { q: 'Я буду публиковать свои статьи / писать экспертное мнение в специализированные издания.', opts: ['Никогда','Редко','Иногда','Часто','Всегда'] },
+    { q: 'Я знаю, как публично выступать перед целевой аудиторией на бизнес-ланчах, конференциях и прочих мероприятиях.', opts: ['Не знаю','Не уверен','Примерно','Знаю','Знаю и буду применять на практике'] },
+    { q: 'Ко мне будут обращаться незнакомые люди за помощью.', opts: ['Никогда','Редко','Иногда','Часто','Всегда'] }
+  ];
+
+  const container = document.getElementById('quiz-container');
+  const progressEl = document.getElementById('quiz-progress');
+  const answers = [];
+  let currentQ = 0;
+
+  function showQuestion(idx) {
+    if (idx >= questions.length) { showResult(); return; }
+    const q = questions[idx];
+    progressEl.textContent = `Вопрос ${idx + 1} из ${questions.length}`;
+    const div = document.createElement('div');
+    div.className = 'quiz-q';
+    div.innerHTML = `<h3>${idx + 1}. ${q.q}</h3><div class="quiz-options"></div>`;
+    const optsWrap = div.querySelector('.quiz-options');
+    q.opts.forEach((label, oi) => {
+      const btn = document.createElement('div');
+      btn.className = 'quiz-opt';
+      btn.textContent = label;
+      btn.addEventListener('click', () => {
+        optsWrap.querySelectorAll('.quiz-opt').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        answers[idx] = oi + 1;
+        currentQ = idx + 1;
+        setTimeout(() => {
+          showQuestion(currentQ);
+          container.scrollTop = container.scrollHeight;
+        }, 350);
+      });
+      optsWrap.appendChild(btn);
+    });
+    container.appendChild(div);
+  }
+
+  function showResult() {
+    const total = answers.reduce((a, b) => a + b, 0);
+    let msg;
+    if (total <= 20) {
+      msg = 'Зарядись на эффективный нетворкинг и настройся на полное погружение в курс! Рекомендуем пройти его от А до Я.';
+    } else if (total <= 35) {
+      msg = 'Кажется, у тебя есть базовые знания. Повысь их до максимума — сделай первый шаг!';
+    } else {
+      msg = 'Твоих знаний вполне достаточно, чтобы добиться блестящих результатов. Но перед тобой стоит ответственная задача — сделать свой навык нетворкинга ещё более совершенным. Дерзай!';
+    }
+    progressEl.textContent = 'Тест завершён';
+    const div = document.createElement('div');
+    div.className = 'quiz-result';
+    div.innerHTML = `<h3>Твой результат: ${total} из 50</h3><p style="font-size:13px;line-height:1.5;">${msg}</p>`;
+    container.appendChild(div);
+    document.getElementById('btn-quiz-next').style.display = 'inline-flex';
+    container.scrollTop = container.scrollHeight;
+  }
+
+  showQuestion(0);
+}
       <!-- Экран 3. Комната Златы -->
       <div class="screen" id="screen-3">
               <div class="screen-layout">
@@ -3991,6 +4110,7 @@ popup.style.pointerEvents = 'none';
     initGlobalNav();
     initMainMenu();
     initQuotes();
+    initQuiz();
     initKeysGame();
     initCafeScreen();
     initOfficeMap();
