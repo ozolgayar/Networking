@@ -307,6 +307,7 @@
   align-items: center;
   justify-content: center;
   z-index: 50;
+  pointer-events: none;  
 }
 
     #goal-popup .popup-content {
@@ -3510,12 +3511,14 @@ function initPeopleDrag() {
 
     chip.addEventListener('click', () => {
       if (chip.style.display !== 'none') {
-        popup.style.display = 'flex';
+       popup.style.display = 'flex';
+popup.style.pointerEvents = 'auto';
       }
     });
 
     close.addEventListener('click', () => {
       popup.style.display = 'none';
+popup.style.pointerEvents = 'none';
     });
     popup.addEventListener('click', e => {
       if (e.target === popup) popup.style.display = 'none';
