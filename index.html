@@ -1548,7 +1548,7 @@ color: #1e293b;
       </div>
 
       <!-- Экран 2. Тест -->
-      <<div class="screen" id="screen-2">
+      <div class="screen" id="screen-2">
   <div class="screen-layout">
     <div class="scene">
       <div class="scene-header">
@@ -1868,39 +1868,69 @@ color: #1e293b;
         </div>
       </div>
 
-      <!-- Экран 10. Комната Златы, ноутбук -->
-      <div class="screen" id="screen-10">
-       
-        <div class="screen-layout">
-          <div class="scene">
-            <div class="scene-header">
-              <span class="tagline">Экран 10 • Настрой на нетворкинг</span>
+   <!-- Экран 10. Рабочий стол ноутбука -->
+<div class="screen" id="screen-10">
+  <div class="screen-layout">
+    <div class="scene">
+      <div class="scene-header">
+        <span class="tagline">Экран 10 • Рабочий стол ноутбука</span>
+      </div>
+      <div class="scene-main">
+        <!-- Интерфейс «рабочего стола» -->
+        <div style="width:100%; height:100%; border-radius:14px; background:linear-gradient(135deg,#0f172a,#1e293b); position:relative; display:flex; flex-direction:column; overflow:hidden;">
+          <!-- Панель сверху -->
+          <div style="background:#334155; padding:6px 12px; display:flex; align-items:center; gap:8px; border-radius:14px 14px 0 0;">
+            <div style="width:10px;height:10px;border-radius:50%;background:#ef4444;"></div>
+            <div style="width:10px;height:10px;border-radius:50%;background:#facc15;"></div>
+            <div style="width:10px;height:10px;border-radius:50%;background:#22c55e;"></div>
+            <span style="color:#94a3b8;font-size:11px;margin-left:8px;">Рабочий стол Златы</span>
+          </div>
+          <!-- Папки -->
+          <div style="flex:1; display:flex; align-items:center; justify-content:center; gap:40px; padding:20px;">
+            <!-- Папка: Расписание -->
+            <div id="folder-schedule" style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;" title="Расписание конференции">
+              <div style="width:64px;height:52px;border-radius:4px 4px 8px 8px;background:linear-gradient(135deg,#facc15,#f59e0b);display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 4px 12px rgba(0,0,0,0.3);">📋</div>
+              <span style="color:#e2e8f0;font-size:11px;text-align:center;">Расписание<br>конференции</span>
             </div>
-            <div class="scene-main">
-              <div class="fake-illustration" id="room-laptop-area">
-                Комната Златы. На столе стоит ноутбук.
-                <div class="quote-box">
-                  «У меня не очень хорошо получается заводить знакомства. Точнее, вообще не получается.
-                  Надо как-то подготовиться. Кажется, у меня сохранилась презентация с мастер-класса по нетворкингу».
-                </div>
-                <div class="hotspot" id="laptop-hotspot" style="width: 90px; height: 50px; bottom: 18%; right: 20%;">
-                  <div class="tooltip">Ноутбук</div>
-                </div>
-              </div>
+            <!-- Папка: Цель -->
+            <div id="folder-goal" style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;" title="Поставить цель">
+              <div style="width:64px;height:52px;border-radius:4px 4px 8px 8px;background:linear-gradient(135deg,#22c55e,#16a34a);display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 4px 12px rgba(0,0,0,0.3);">🎯</div>
+              <span style="color:#e2e8f0;font-size:11px;text-align:center;">Цель</span>
             </div>
           </div>
-          <div class="panel">
-            <div class="panel-tag">Теория</div>
-            <h2>Включаем режим подготовки</h2>
-            <p>
-              Злата решает открыть старую презентацию и понять, ради чего вообще ей нужен нетворкинг.
-            </p>
-            <p class="note">
-              Нажми на ноутбук на иллюстрации, чтобы открыть упражнение.
-            </p>
+          <!-- Мысль Златы -->
+          <div style="padding:8px 14px 10px; background:rgba(0,0,0,0.3); font-size:12px; color:#94a3b8; line-height:1.4;">
+            💬 «Надо подготовиться. Посмотрю расписание и поставлю себе цель.»
+          </div>
+        </div>
+        <!-- Модалка расписания -->
+        <div class="modal-overlay" id="schedule-modal">
+          <div class="modal" style="max-width:460px;">
+            <h3>📋 Расписание конференции</h3>
+            <p>Когда собираешься на конференцию или выставку, которая длится несколько дней, прежде всего изучи расписание. Выбери сессии, которые тебе наиболее интересны.</p>
+            <p style="margin-top:6px;">Особое внимание обрати на те события, проведение которых соответствует времени суток, когда ты наиболее комфортно чувствуешь себя в толпе.</p>
+            <p style="margin-top:6px;">Оставь как минимум час для того, чтобы побыть среди людей. За это время оцени ситуацию, обменяйся контактами с парой человек.</p>
+            <p style="margin-top:6px;">Можно знакомиться с людьми в перерывах между выступлениями или участвуя в пленарном заседании.</p>
+            <div class="actions-row" style="margin-top:12px; justify-content:flex-end;">
+              <button class="btn" id="schedule-modal-ok">ОК</button>
+            </div>
           </div>
         </div>
       </div>
+    </div>
+    <div class="panel">
+      <div class="panel-tag">Теория</div>
+      <h2>Включаем режим подготовки</h2>
+      <p>Злата открыла ноутбук и решила подготовиться к конференции.</p>
+      <p>На рабочем столе две папки. Нажми на каждую:</p>
+      <ul>
+        <li><strong>📋 Расписание конференции</strong> — узнаешь, как выбрать подходящие сессии</li>
+        <li><strong>🎯 Цель</strong> — перейдёшь к упражнению</li>
+      </ul>
+      <p class="note">Нажми на папки на экране ноутбука слева.</p>
+    </div>
+  </div>
+</div>
 
       <!-- Экран 11. Для чего нетворкинг тебе? -->
       <div class="screen" id="screen-11">
@@ -3154,9 +3184,20 @@ color: #1e293b;
   }
 
   // ===== Экран 10: ноутбук =====
-  function initLaptopHotspot() {
-    document.getElementById('laptop-hotspot').addEventListener('click', () => {
+function initLaptopHotspot() {
+    document.getElementById('folder-goal').addEventListener('click', function() {
       showScreen('screen-11');
+    });
+    document.getElementById('folder-schedule').addEventListener('click', function() {
+      document.getElementById('schedule-modal').classList.add('active');
+    });
+    document.getElementById('schedule-modal-ok').addEventListener('click', function() {
+      document.getElementById('schedule-modal').classList.remove('active');
+    });
+    document.getElementById('schedule-modal').addEventListener('click', function(e) {
+      if (e.target === document.getElementById('schedule-modal')) {
+        document.getElementById('schedule-modal').classList.remove('active');
+      }
     });
   }
 
