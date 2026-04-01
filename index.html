@@ -1312,6 +1312,59 @@ color: #1e293b;
   font-weight: 600;
   font-feature-settings: "tnum" 1;
 }
+    /* Ползунки важности — экран 15 */
+.importance-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.importance-row .imp-label {
+  width: 110px;
+  font-size: 12px;
+  color: var(--text);
+  flex-shrink: 0;
+}
+
+.importance-row input[type="range"] {
+  flex: 1;
+  height: 6px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: #e2e8f0;
+  border-radius: 999px;
+  outline: none;
+  cursor: pointer;
+}
+
+.importance-row input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.5);
+  cursor: pointer;
+}
+
+.importance-row input[type="range"]::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.5);
+  border: none;
+  cursor: pointer;
+}
+
+.importance-row .imp-value {
+  width: 28px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent-soft);
+}
   </style>
 </head>
 <body>
@@ -2035,18 +2088,22 @@ color: #1e293b;
         <svg id="resultWheelSvg" width="100%" viewBox="0 0 420 420" style="max-width:400px;"></svg>
       </div>
     </div>
-    <div class="panel">
-      <div class="panel-tag">Теория</div>
-      <h2>Твоё колесо баланса</h2>
-      <p>
-        На конференции имеет смысл искать людей, связанных со сферами, в которых у тебя самые высокие баллы.
-      </p>
-      <div class="metric-row">
-        <span class="mini-label">Твои приоритетные сферы:</span>
-        <span id="top-sectors"></span>
+    <div class="panel" style="overflow-y:auto; max-height:calc(100vh - 180px);">
+      <div class="panel-tag">Упражнение</div>
+      <h2>Оцени важность каждой сферы</h2>
+      <p>Насколько важна для тебя каждая сфера? Передвинь ползунок от 1 (не важна) до 10 (критически важна).</p>
+      <div id="importance-sliders"></div>
+      <button class="btn" id="btn-calc-priority" style="margin-top:8px;">Рассчитать приоритеты</button>
+      <div id="priority-result" style="display:none; margin-top:10px;">
+        <h3>🎯 Рекомендация</h3>
+        <p>Сферы, где <strong>высокая важность</strong>, но <strong>мало контактов</strong> — именно там стоит искать людей на конференции:</p>
+        <div class="metric-row" style="margin-top:6px;">
+          <span class="mini-label">Твои приоритетные сферы:</span>
+          <strong id="top-sectors" style="color: var(--accent-soft);"></strong>
+        </div>
+        <p class="note" style="margin-top:6px;">+1 к уровню нетворкинга.</p>
       </div>
-      <p class="note">+1 к уровню нетворкинга.</p>
-      <div class="actions-row">
+      <div class="actions-row" style="margin-top:8px;">
         <button class="btn secondary nav-back" data-prev>Назад</button>
         <button class="btn" data-next="screen-16">Продолжить</button>
       </div>
@@ -2687,6 +2744,7 @@ color: #1e293b;
     wheel: {
       segments: ['Карьера', 'Образование', 'Хобби', 'Личные проекты', 'Финансы', 'Здоровье'],
       values: [0, 0, 0, 0, 0, 0],
+       importance: [5, 5, 5, 5, 5, 5],  // ← ДОБАВИТЬ
       currentIndex: 0
     },
     beads: {
@@ -3351,61 +3409,72 @@ function initWheel() {
 
 // ===== Экран 15: результат колеса (новое) =====
 function initWheelSummary() {
+  const slidersContainer = document.getElementById('importance-sliders');
+  const btnCalc = document.getElementById('btn-calc-priority');
+  const resultBlock = document.getElementById('priority-result');
   const topSectorsEl = document.getElementById('top-sectors');
+  let slidersBuilt = false;
+
+  function buildSliders() {
+    if (slidersBuilt) return;
+    slidersBuilt = true;
+    slidersContainer.innerHTML = '';
+    wheelCategories.forEach((cat, i) => {
+      const row = document.createElement('div');
+      row.className = 'importance-row';
+      row.innerHTML = `
+        <span class="imp-label">${cat.emoji} ${cat.name}</span>
+        <input type="range" min="1" max="10" value="${state.wheel.importance[i]}" data-idx="${i}">
+        <span class="imp-value">${state.wheel.importance[i]}</span>
+      `;
+      const slider = row.querySelector('input[type="range"]');
+      const valSpan = row.querySelector('.imp-value');
+      slider.addEventListener('input', () => {
+        state.wheel.importance[i] = parseInt(slider.value, 10);
+        valSpan.textContent = slider.value;
+      });
+      slidersContainer.appendChild(row);
+    });
+  }
+
+  btnCalc.addEventListener('click', () => {
+    // Формула: score = importance * (11 - wheelValue)
+    // Чем выше важность И чем ниже текущий балл контактов — тем выше score
+    const scores = wheelCategories.map((cat, i) => ({
+      idx: i,
+      name: cat.name,
+      emoji: cat.emoji,
+      importance: state.wheel.importance[i],
+      contacts: state.wheel.values[i],
+      score: state.wheel.importance[i] * (11 - state.wheel.values[i])
+    }));
+
+    // Сортируем по убыванию score
+    scores.sort((a, b) => b.score - a.score);
+
+    // Берём топ — все с максимальным score, или топ-2
+    const topScore = scores[0].score;
+    const top = scores.filter(s => s.score >= topScore * 0.85); // в пределах 85% от макс.
+
+    topSectorsEl.innerHTML = top.map(s =>
+      `<span style="display:inline-flex; align-items:center; gap:4px; padding:3px 8px; border-radius:999px; background:rgba(34,197,94,0.12); border:1px solid rgba(34,197,94,0.4); margin:2px;">${s.emoji} ${s.name} <span style="font-size:11px; color:var(--text-soft);">(важность ${s.importance}, контакты ${s.contacts})</span></span>`
+    ).join(' ');
+
+    resultBlock.style.display = 'block';
+    addNetworking(1);
+  });
+
+  // Отрисовка при открытии экрана
   const observer = new MutationObserver(() => {
     if (document.getElementById('screen-15').classList.contains('active')) {
       renderWheel('resultWheelSvg', state.wheel.values, -1);
-      const max = Math.max(...state.wheel.values);
-      const idxs = state.wheel.values.map((v, i) => v === max ? i : -1).filter(i => i >= 0);
-      topSectorsEl.textContent = idxs.map(i => wheelCategories[i].name).join(', ');
-      addNetworking(1);
+      buildSliders();
     }
   });
   observer.observe(document.getElementById('screen-container'), {
     attributes: true, subtree: true, attributeFilter: ['class']
   });
 }
-  // ===== Экран 16: перетаскивание человечков (прототип) =====
-  function initPeopleDrag() {
-    const pool = document.getElementById('people-pool');
-    const target = document.getElementById('people-target');
-    for (let i = 0; i < 10; i++) {
-      const p = document.createElement('div');
-      p.className = 'person-token';
-      p.textContent = '🙂';
-      p.draggable = true;
-      pool.appendChild(p);
-    }
-
-    function allowDrop(e) {
-      e.preventDefault();
-    }
-
-    function handleDrop(e, dest) {
-      e.preventDefault();
-      const dragging = document.querySelector('.person-token.dragging');
-      if (dragging && dragging.parentElement !== dest) {
-        dest.appendChild(dragging);
-      }
-    }
-
-    [pool, target].forEach(el => {
-      el.addEventListener('dragover', allowDrop);
-    });
-    pool.addEventListener('drop', e => handleDrop(e, pool));
-    target.addEventListener('drop', e => handleDrop(e, target));
-
-    document.addEventListener('dragstart', e => {
-      if (e.target.classList.contains('person-token')) {
-        e.target.classList.add('dragging');
-      }
-    });
-    document.addEventListener('dragend', e => {
-      if (e.target.classList.contains('person-token')) {
-        e.target.classList.remove('dragging');
-      }
-    });
-  }
 
   // ===== HUD цель Златы — появляется только с экрана 17 =====
   function initGoalHud() {
