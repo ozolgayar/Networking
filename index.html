@@ -1984,90 +1984,75 @@ color: #1e293b;
         </div>
       </div>
 
-      <!-- Экран 14. Колесо баланса -->
-      <div class="screen" id="screen-14">
-       
-        <div class="screen-layout">
-          <div class="scene">
-            <div class="scene-header">
-              <span class="tagline">Экран 14 • Колесо баланса контактов</span>
-            </div>
-            <div class="scene-main">
-  <svg id="wheelSvg" width="100%" viewBox="0 0 420 420" style="max-width:400px;"></svg>
-</div>
-          <div class="panel">
-            <div class="panel-tag">Теория</div>
-            <h2>Колесо баланса контактов</h2>
-            <p>
-              Прочитай название сферы и подумай:
-              «Есть ли у меня люди, к которым я могу обратиться в этой области?
-              Те, кто ответит на сообщение, поможет советом или познакомит с нужным человеком?»
-            </p>
-            <p style="margin-top: 4px;">
-              Оцени от 1 до 10. Где:
-            </p>
-            <ul>
-              <li><strong>1–2</strong> — контактов почти нет</li>
-              <li><strong>3–4</strong> — есть пара человек, но связь слабая</li>
-              <li><strong>5–6</strong> — есть несколько знакомых, связь не системная</li>
-              <li><strong>7–8</strong> — есть надёжные контакты</li>
-              <li><strong>9–10</strong> — сильная сеть: активная связь, взаимная польза</li>
-            </ul>
-
-            <div class="seg-control">
-              <div class="seg-control-title">
-                Текущая сфера: <span id="current-seg-name">Карьера</span>
-              </div>
-              <div class="seg-level-buttons" id="seg-level-buttons"></div>
-            </div>
-
-            <p class="note">
-              Сферы по очереди: Карьера, Образование, Хобби, Личные проекты, Финансы, Здоровье.
-            </p>
-
-            <div class="actions-row" style="margin-top: 6px;">
-              <button class="btn" id="btn-wheel-next" disabled>Перейти к следующей сфере</button>
-              <button class="btn secondary" id="btn-wheel-finish" style="display:none;" data-next="screen-15">Готово</button>
-            </div>
-          </div>
-        </div>
+<!-- Экран 14. Колесо баланса -->
+<div class="screen" id="screen-14">
+  <div class="screen-layout">
+    <div class="scene">
+      <div class="scene-header">
+        <span class="tagline">Экран 14 • Колесо баланса контактов</span>
       </div>
-
+      <div class="scene-main">
+        <svg id="wheelSvg" width="100%" viewBox="0 0 420 420" style="max-width:400px;"></svg>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-tag">Теория</div>
+      <h2>Колесо баланса контактов</h2>
+      <p>
+        Прочитай название сферы и подумай:
+        «Есть ли у меня люди, к которым я могу обратиться в этой области?»
+      </p>
+      <p style="margin-top: 4px;">Оцени от 1 до 10:</p>
+      <ul>
+        <li><strong>1–2</strong> — контактов почти нет</li>
+        <li><strong>3–4</strong> — есть пара человек, но связь слабая</li>
+        <li><strong>5–6</strong> — есть несколько знакомых, связь не системная</li>
+        <li><strong>7–8</strong> — есть надёжные контакты</li>
+        <li><strong>9–10</strong> — сильная сеть: активная связь, взаимная польза</li>
+      </ul>
+      <div class="seg-control">
+        <div class="seg-control-title">
+          Текущая сфера: <span id="current-seg-name">Карьера</span>
+        </div>
+        <div class="seg-level-buttons" id="seg-level-buttons"></div>
+      </div>
+      <div class="actions-row" style="margin-top: 6px;">
+        <button class="btn" id="btn-wheel-next" disabled>Следующая сфера</button>
+        <button class="btn secondary" id="btn-wheel-reset" style="display:none;">Оценить заново</button>
+        <button class="btn" id="btn-wheel-finish" style="display:none;">Готово</button>
+      </div>
+    </div>
+  </div>
+</div>
       <!-- Экран 15. Твоё колесо баланса -->
-      <div class="screen" id="screen-15">
-      
-        <div class="screen-layout">
-          <div class="scene">
-            <div class="scene-header">
-              <span class="tagline">Экран 15 • Твоё колесо баланса</span>
-            </div>
-     <div class="scene-main">
-  <svg id="resultWheelSvg" width="100%" viewBox="0 0 420 420" style="max-width:400px;"></svg>
-</div>
-          <div class="panel">
-            <div class="panel-tag">Теория</div>
-            <h2>Твоё колесо баланса</h2>
-            <p>
-              На конференции имеет смысл искать людей, связанных со сферами, в которых у тебя самые высокие баллы.
-            </p>
-            <div class="metric-row">
-              <span class="mini-label">Твои приоритетные сферы:</span>
-              <span id="top-sectors"></span>
-            </div>
-            <p class="note">
-              Справа (в полноценной версии курса) можно показать, как Злата заполнила своё колесо, и её мысли.
-            </p>
-            <p class="note">
-              +1 к уровню нетворкинга.
-            </p>
-            <div class="actions-row">
-               <button class="btn secondary nav-back" data-prev>Назад</button>
-              <button class="btn" data-next="screen-16">Продолжить</button>
-            </div>
-          </div>
-        </div>
+<div class="screen" id="screen-15">
+  <div class="screen-layout">
+    <div class="scene">
+      <div class="scene-header">
+        <span class="tagline">Экран 15 • Твоё колесо баланса</span>
       </div>
-
+      <div class="scene-main">
+        <svg id="resultWheelSvg" width="100%" viewBox="0 0 420 420" style="max-width:400px;"></svg>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-tag">Теория</div>
+      <h2>Твоё колесо баланса</h2>
+      <p>
+        На конференции имеет смысл искать людей, связанных со сферами, в которых у тебя самые высокие баллы.
+      </p>
+      <div class="metric-row">
+        <span class="mini-label">Твои приоритетные сферы:</span>
+        <span id="top-sectors"></span>
+      </div>
+      <p class="note">+1 к уровню нетворкинга.</p>
+      <div class="actions-row">
+        <button class="btn secondary nav-back" data-prev>Назад</button>
+        <button class="btn" data-next="screen-16">Продолжить</button>
+      </div>
+    </div>
+  </div>
+</div>
        <!-- Экран 16. Сколько знакомств ты заведёшь -->
       <div class="screen" id="screen-16">
        
@@ -3302,6 +3287,7 @@ function initWheel() {
   const currentSegName = document.getElementById('current-seg-name');
   const btnNext = document.getElementById('btn-wheel-next');
   const btnFinish = document.getElementById('btn-wheel-finish');
+  const btnReset = document.getElementById('btn-wheel-reset');
 
   function findNextUnfilled() {
     return state.wheel.values.findIndex(v => v === 0);
@@ -3326,6 +3312,7 @@ function initWheel() {
     renderWheel('wheelSvg', state.wheel.values, idx);
     const allFilled = state.wheel.values.every(v => v > 0);
     btnFinish.style.display = allFilled ? 'inline-flex' : 'none';
+    btnReset.style.display = allFilled ? 'inline-flex' : 'none';
     btnNext.style.display = allFilled ? 'none' : 'inline-flex';
     btnNext.disabled = value === 0;
   }
@@ -3345,7 +3332,18 @@ function initWheel() {
     }
   });
 
-  btnFinish.addEventListener('click', () => { addNetworking(1); });
+  // Готово — начисляем очки и переходим на экран 15
+  btnFinish.addEventListener('click', () => {
+    addNetworking(1);
+    showScreen('screen-15');
+  });
+
+  // Оценить заново — сбрасываем все оценки
+  btnReset.addEventListener('click', () => {
+    state.wheel.values = [0, 0, 0, 0, 0, 0];
+    state.wheel.currentIndex = 0;
+    updateUI();
+  });
 
   state.wheel.currentIndex = 0;
   updateUI();
