@@ -1993,38 +1993,8 @@ color: #1e293b;
               <span class="tagline">Экран 14 • Колесо баланса контактов</span>
             </div>
             <div class="scene-main">
-              <div class="wheel-wrapper">
-                <!-- SVG-колесо -->
-                <svg class="wheel-svg" viewBox="0 0 100 100">
-                  <circle cx="50" cy="50" r="49" fill="#f8fafc" stroke="#cbd5e1" stroke-width="0.5"></circle>
-                  <g id="wheel-sectors">
-                    <path id="sector-0" class="wheel-sector" fill="#22c55e"
-                          d="M50 50 L50 3 A47 47 0 0 1 89.27 23.5 Z"></path>
-                    <path id="sector-1" class="wheel-sector" fill="#38bdf8"
-                          d="M50 50 L89.27 23.5 A47 47 0 0 1 89.27 76.5 Z"></path>
-                    <path id="sector-2" class="wheel-sector" fill="#f97316"
-                          d="M50 50 L89.27 76.5 A47 47 0 0 1 50 97 Z"></path>
-                    <path id="sector-3" class="wheel-sector" fill="#e11d48"
-                          d="M50 50 L50 97 A47 47 0 0 1 10.73 76.5 Z"></path>
-                    <path id="sector-4" class="wheel-sector" fill="#a855f7"
-                          d="M50 50 L10.73 76.5 A47 47 0 0 1 10.73 23.5 Z"></path>
-                    <path id="sector-5" class="wheel-sector" fill="#facc15"
-                          d="M50 50 L10.73 23.5 A47 47 0 0 1 50 3 Z"></path>
-                  </g>
-                  <!-- кольца уровней -->
-                  <circle cx="50" cy="50" r="9" class="wheel-level-ring"></circle>
-                  <circle cx="50" cy="50" r="17" class="wheel-level-ring"></circle>
-                  <circle cx="50" cy="50" r="25" class="wheel-level-ring"></circle>
-                  <circle cx="50" cy="50" r="33" class="wheel-level-ring"></circle>
-                  <circle cx="50" cy="50" r="41" class="wheel-level-ring"></circle>
-                  <circle cx="50" cy="50" r="49" class="wheel-level-ring"></circle>
-                </svg>
-                <div class="wheel-sector-labels" id="wheel-center-label">
-                  Карьера
-                </div>
-              </div>
-            </div>
-          </div>
+  <svg id="wheelSvg" width="100%" viewBox="0 0 420 420" style="max-width:400px;"></svg>
+</div>
           <div class="panel">
             <div class="panel-tag">Теория</div>
             <h2>Колесо баланса контактов</h2>
@@ -2071,12 +2041,9 @@ color: #1e293b;
             <div class="scene-header">
               <span class="tagline">Экран 15 • Твоё колесо баланса</span>
             </div>
-            <div class="scene-main">
-              <div class="fake-illustration" id="wheel-summary">
-                Здесь отображается заполненное тобой колесо баланса (используются данные с прошлого экрана).
-              </div>
-            </div>
-          </div>
+     <div class="scene-main">
+  <svg id="resultWheelSvg" width="100%" viewBox="0 0 420 420" style="max-width:400px;"></svg>
+</div>
           <div class="panel">
             <div class="panel-tag">Теория</div>
             <h2>Твоё колесо баланса</h2>
@@ -3223,83 +3190,183 @@ color: #1e293b;
   }
 
   // ===== Экран 14: колесо баланса =====
-  function initWheel() {
-    const segBtnContainer = document.getElementById('seg-level-buttons');
-    const currentSegName = document.getElementById('current-seg-name');
-    const wheelCenterLabel = document.getElementById('wheel-center-label');
-    const btnNext = document.getElementById('btn-wheel-next');
-    const btnFinish = document.getElementById('btn-wheel-finish');
+  // ===== SVG-колесо: вспомогательные функции =====
+const wheelCategories = [
+  { name:'Карьера',        color:'#22c55e', emoji:'💼' },
+  { name:'Образование',    color:'#38bdf8', emoji:'🏫' },
+  { name:'Хобби',          color:'#f97316', emoji:'🎨' },
+  { name:'Личные проекты', color:'#a855f7', emoji:'📁' },
+  { name:'Финансы',        color:'#facc15', emoji:'💸' },
+  { name:'Здоровье',       color:'#e11d48', emoji:'🩺' }
+];
 
-    for (let i = 1; i <= 10; i++) {
-      const b = document.createElement('button');
-      b.textContent = i;
-      b.dataset.level = i;
-      segBtnContainer.appendChild(b);
+function polar(cx, cy, r, angle) {
+  const rad = (angle - 90) * Math.PI / 180;
+  return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
+}
+
+function sectorPath(cx, cy, r1, r2, startAngle, endAngle) {
+  const p1 = polar(cx, cy, r2, startAngle);
+  const p2 = polar(cx, cy, r2, endAngle);
+  const p3 = polar(cx, cy, r1, endAngle);
+  const p4 = polar(cx, cy, r1, startAngle);
+  const largeArc = endAngle - startAngle <= 180 ? 0 : 1;
+  return [
+    `M ${p1.x} ${p1.y}`,
+    `A ${r2} ${r2} 0 ${largeArc} 1 ${p2.x} ${p2.y}`,
+    `L ${p3.x} ${p3.y}`,
+    `A ${r1} ${r1} 0 ${largeArc} 0 ${p4.x} ${p4.y}`,
+    'Z'
+  ].join(' ');
+}
+
+function renderWheel(svgId, values, activeIndex) {
+  const svg = document.getElementById(svgId);
+  if (!svg) return;
+  const cx = 210, cy = 210, maxR = 150, innerR = 24;
+  const step = (maxR - innerR) / 10;
+  svg.innerHTML = '';
+
+  for (let i = 1; i <= 10; i++) {
+    const r = innerR + step * i;
+    const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    c.setAttribute('cx', cx); c.setAttribute('cy', cy); c.setAttribute('r', r);
+    c.setAttribute('fill', 'none');
+    c.setAttribute('stroke', i === 10 ? '#cbd5e1' : '#e2e8f0');
+    c.setAttribute('stroke-width', '1');
+    svg.appendChild(c);
+  }
+
+  for (let i = 0; i < 6; i++) {
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    const p = polar(cx, cy, maxR + 10, i * 60);
+    line.setAttribute('x1', cx); line.setAttribute('y1', cy);
+    line.setAttribute('x2', p.x); line.setAttribute('y2', p.y);
+    line.setAttribute('stroke', '#e2e8f0'); line.setAttribute('stroke-width', '1.5');
+    svg.appendChild(line);
+  }
+
+  wheelCategories.forEach((cat, i) => {
+    const start = i * 60, end = start + 60;
+    const value = values[i] || 0;
+    const r2 = innerR + step * value;
+
+    if (value > 0) {
+      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path.setAttribute('d', sectorPath(cx, cy, innerR, r2, start, end));
+      path.setAttribute('fill', cat.color);
+      path.setAttribute('fill-opacity', activeIndex === i ? '0.92' : '0.78');
+      path.setAttribute('stroke', '#ffffff'); path.setAttribute('stroke-width', '2');
+      svg.appendChild(path);
     }
 
-    function updateSegmentUI() {
-      const idx = state.wheel.currentIndex;
-      const name = state.wheel.segments[idx];
-      const value = state.wheel.values[idx];
-
-      currentSegName.textContent = name;
-      wheelCenterLabel.textContent = name;
-      document.querySelectorAll('.wheel-sector').forEach((p, i) => {
-        p.classList.toggle('active', i === idx);
-      });
-      segBtnContainer.querySelectorAll('button').forEach(btn => {
-        btn.classList.toggle('active', parseInt(btn.dataset.level, 10) === value);
-      });
-
-      btnNext.disabled = value === 0;
-      if (idx === state.wheel.segments.length - 1) {
-        btnNext.style.display = 'inline-flex';
-        btnNext.textContent = 'Оценить заново нельзя, но можно перейти дальше';
-        btnFinish.style.display = 'inline-flex';
-      } else {
-        btnNext.style.display = 'inline-flex';
-        btnNext.textContent = 'Перейти к следующей сфере';
-        btnFinish.style.display = 'none';
-      }
+    if (activeIndex === i) {
+      const ring = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      ring.setAttribute('d', sectorPath(cx, cy, innerR, maxR, start, end));
+      ring.setAttribute('fill', 'none'); ring.setAttribute('stroke', cat.color);
+      ring.setAttribute('stroke-width', '4'); ring.setAttribute('stroke-dasharray', '8 6');
+      svg.appendChild(ring);
     }
 
-    segBtnContainer.addEventListener('click', e => {
-      if (e.target.tagName !== 'BUTTON') return;
-      const lvl = parseInt(e.target.dataset.level, 10);
-      state.wheel.values[state.wheel.currentIndex] = lvl;
-      updateSegmentUI();
-    });
+    const lp = polar(cx, cy, maxR + 34, start + 30);
+    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    text.setAttribute('x', lp.x); text.setAttribute('y', lp.y);
+    text.setAttribute('font-size', '13');
+    text.setAttribute('font-weight', activeIndex === i ? '800' : '700');
+    text.setAttribute('fill', activeIndex === i ? cat.color : '#64748b');
+    text.setAttribute('text-anchor', 'middle');
+    text.textContent = cat.name;
+    svg.appendChild(text);
 
-    btnNext.addEventListener('click', () => {
-      if (state.wheel.currentIndex < state.wheel.segments.length - 1) {
-        state.wheel.currentIndex++;
-        updateSegmentUI();
-      }
-    });
+    if (value > 0) {
+      const sp = polar(cx, cy, Math.max(innerR + 14, innerR + step * value - 10), start + 30);
+      const st = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      st.setAttribute('x', sp.x); st.setAttribute('y', sp.y);
+      st.setAttribute('font-size', '13'); st.setAttribute('font-weight', '800');
+      st.setAttribute('fill', '#1e293b'); st.setAttribute('text-anchor', 'middle');
+      st.textContent = value;
+      svg.appendChild(st);
+    }
+  });
 
-    btnFinish.addEventListener('click', () => {
+  const center = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  center.setAttribute('cx', cx); center.setAttribute('cy', cy); center.setAttribute('r', innerR);
+  center.setAttribute('fill', '#ffffff'); center.setAttribute('stroke', '#e2e8f0');
+  center.setAttribute('stroke-width', '2');
+  svg.appendChild(center);
+}
+
+// ===== Экран 14: колесо баланса (новое) =====
+function initWheel() {
+  const segBtnContainer = document.getElementById('seg-level-buttons');
+  const currentSegName = document.getElementById('current-seg-name');
+  const btnNext = document.getElementById('btn-wheel-next');
+  const btnFinish = document.getElementById('btn-wheel-finish');
+
+  function findNextUnfilled() {
+    return state.wheel.values.findIndex(v => v === 0);
+  }
+
+  segBtnContainer.innerHTML = '';
+  for (let i = 1; i <= 10; i++) {
+    const b = document.createElement('button');
+    b.textContent = i;
+    b.dataset.level = i;
+    segBtnContainer.appendChild(b);
+  }
+
+  function updateUI() {
+    const idx = state.wheel.currentIndex;
+    const name = wheelCategories[idx].name;
+    const value = state.wheel.values[idx];
+    currentSegName.textContent = name;
+    segBtnContainer.querySelectorAll('button').forEach(btn => {
+      btn.classList.toggle('active', parseInt(btn.dataset.level, 10) === value);
+    });
+    renderWheel('wheelSvg', state.wheel.values, idx);
+    const allFilled = state.wheel.values.every(v => v > 0);
+    btnFinish.style.display = allFilled ? 'inline-flex' : 'none';
+    btnNext.style.display = allFilled ? 'none' : 'inline-flex';
+    btnNext.disabled = value === 0;
+  }
+
+  segBtnContainer.addEventListener('click', e => {
+    if (e.target.tagName !== 'BUTTON') return;
+    state.wheel.values[state.wheel.currentIndex] = parseInt(e.target.dataset.level, 10);
+    const next = findNextUnfilled();
+    if (next !== -1) state.wheel.currentIndex = next;
+    updateUI();
+  });
+
+  btnNext.addEventListener('click', () => {
+    if (state.wheel.currentIndex < state.wheel.segments.length - 1) {
+      state.wheel.currentIndex++;
+      updateUI();
+    }
+  });
+
+  btnFinish.addEventListener('click', () => { addNetworking(1); });
+
+  state.wheel.currentIndex = 0;
+  updateUI();
+}
+
+// ===== Экран 15: результат колеса (новое) =====
+function initWheelSummary() {
+  const topSectorsEl = document.getElementById('top-sectors');
+  const observer = new MutationObserver(() => {
+    if (document.getElementById('screen-15').classList.contains('active')) {
+      renderWheel('resultWheelSvg', state.wheel.values, -1);
+      const max = Math.max(...state.wheel.values);
+      const idxs = state.wheel.values.map((v, i) => v === max ? i : -1).filter(i => i >= 0);
+      topSectorsEl.textContent = idxs.map(i => wheelCategories[i].name).join(', ');
       addNetworking(1);
-    });
-
-    updateSegmentUI();
-  }
-
-  // ===== Экран 15: вывод колеса =====
-  function initWheelSummary() {
-    const topSectorsEl = document.getElementById('top-sectors');
-
-    const observer = new MutationObserver(() => {
-      if (document.getElementById('screen-15').classList.contains('active')) {
-        const values = state.wheel.values;
-        const max = Math.max(...values);
-        const indexes = values.map((v, i) => v === max ? i : -1).filter(i => i >= 0);
-        topSectorsEl.textContent = indexes.map(i => state.wheel.segments[i]).join(', ');
-        addNetworking(1);
-      }
-    });
-    observer.observe(document.getElementById('screen-container'), { attributes: true, subtree: true, attributeFilter: ['class'] });
-  }
-
+    }
+  });
+  observer.observe(document.getElementById('screen-container'), {
+    attributes: true, subtree: true, attributeFilter: ['class']
+  });
+}
   // ===== Экран 16: перетаскивание человечков (прототип) =====
   function initPeopleDrag() {
     const pool = document.getElementById('people-pool');
