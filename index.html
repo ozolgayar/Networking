@@ -1416,6 +1416,56 @@ color: #1e293b;
   color: var(--text-soft);
   margin-bottom: 8px;
 }
+    /* Сумочка нетворкера — экран 21-1 */
+.bag-shelf {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  width: 100%;
+  padding: 8px;
+}
+.bag-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 4px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  cursor: pointer;
+  transition: .15s ease;
+  font-size: 11px;
+  text-align: center;
+  color: var(--text-soft);
+}
+.bag-item:hover { background: #f1f5f9; transform: translateY(-1px); }
+.bag-item.taken {
+  opacity: 0.4;
+  pointer-events: none;
+  border-style: dashed;
+}
+.bag-item .bag-emoji { font-size: 22px; }
+.bag-zone {
+  min-height: 50px;
+  border-radius: 10px;
+  border: 1px dashed rgba(34,197,94,0.5);
+  background: rgba(34,197,94,0.04);
+  padding: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-content: flex-start;
+}
+.bag-chip {
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  background: rgba(34,197,94,0.12);
+  border: 1px solid rgba(34,197,94,0.4);
+  color: #166534;
+  animation: fadeIn .25s ease-out;
+}
   </style>
 </head>
 <body>
@@ -1449,6 +1499,7 @@ color: #1e293b;
         <li data-goto="screen-19">19. Визитка</li>
         <li data-goto="screen-20">20. Редактор профиля</li>
         <li data-goto="screen-21">21. Онлайн-доска</li>
+        <li data-goto="screen-21-1">21.1 Сумочка нетворкера</li>
         <li data-goto="screen-22">22. Зал конференции</li>
         <li data-goto="screen-23">23. Кофебрейк</li>
         <li data-goto="screen-24">24. Follow-up письмо</li>
@@ -2591,12 +2642,51 @@ color: #1e293b;
             </p>
             <div class="actions-row">
               <button class="btn" id="btn-sticky-add">Добавить на доску</button>
-              <button class="btn secondary" data-next="screen-22">Готово</button>
+             <button class="btn secondary" data-next="screen-21-1">Готово</button>
             </div>
           </div>
         </div>
       </div>
-
+<!-- Экран 21-1. Сумочка нетворкера -->
+<div class="screen" id="screen-21-1">
+  <div class="screen-layout">
+    <div class="scene">
+      <div class="scene-header">
+        <span class="tagline">Экран 21.1 • Сумочка нетворкера</span>
+      </div>
+      <div class="scene-main" style="flex-direction:column; align-items:stretch; overflow-y:auto;">
+        <div style="font-size:12px; color:var(--text-soft); margin-bottom:6px;">📦 Полка с предметами — нажми, чтобы узнать подробнее:</div>
+        <div class="bag-shelf" id="bag-shelf"></div>
+        <div style="font-size:12px; color:var(--text-soft); margin-top:10px;">👜 Сумка:</div>
+        <div class="bag-zone" id="bag-zone"></div>
+        <div id="bag-done-msg" style="display:none; margin-top:8px; padding:10px; border-radius:10px; background:rgba(34,197,94,0.1); border:1px solid rgba(34,197,94,0.3); font-size:13px; color:#166534; text-align:center;">
+          🎉 Сумка собрана! Злата готова отправиться в путь!
+        </div>
+        <!-- Модалка предмета -->
+        <div class="modal-overlay" id="bag-modal">
+          <div class="modal" style="max-width:400px;">
+            <h3 id="bag-modal-title"></h3>
+            <p id="bag-modal-text" style="line-height:1.5;"></p>
+            <div class="actions-row" style="margin-top:10px; justify-content:flex-end;">
+              <button class="btn" id="bag-modal-take">Взять</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-tag">Задание</div>
+      <h2>Сумочка нетворкера</h2>
+      <p>Что может понадобиться нетворкеру на конференции?</p>
+      <p>Нажимай на предметы на полке, чтобы узнать о них и добавить в сумочку.</p>
+      <p class="note">Собери все 10 предметов!</p>
+      <div class="actions-row" style="margin-top:auto;">
+        <button class="btn secondary nav-back" data-prev>Назад</button>
+        <button class="btn" id="btn-bag-go" style="display:none;">В путь! 🚀</button>
+      </div>
+    </div>
+  </div>
+</div>
       <!-- Экран 22. Зал конференции -->
       <div class="screen" id="screen-22">
        
@@ -2842,7 +2932,7 @@ color: #1e293b;
     'screen-6', 'screen-7', 'screen-8', 'screen-9', 'screen-10',
     'screen-11', 'screen-12', 'screen-13', 'screen-14', 'screen-15',
     'screen-16', 'screen-16-1', 'screen-17', 'screen-18', 'screen-19',
-    'screen-20', 'screen-21', 'screen-22', 'screen-23', 'screen-24',
+    'screen-20', 'screen-21', 'screen-21-1', 'screen-22', 'screen-23', 'screen-24',
     'screen-25', 'screen-26'
   ];
 
@@ -3813,7 +3903,72 @@ popup.style.pointerEvents = 'none';
       target.textContent = `♥ ${likes}`;
     });
   }
+ // ===== Экран 21-1: сумочка нетворкера =====
+  function initBag() {
+    var items = [
+      {emoji:'💼',name:'Визитница',text:'Это не та визитница, которая находится в левом внутреннем кармане пиджака или блейзера. Это запасная визитница — неприкосновенный запас, пользоваться которым нужно в случае крайней необходимости.'},
+      {emoji:'🖊️',name:'Ручка',text:'Всегда имей при себе запасную ручку, а лучше две. Идеально, если они именные или корпоративные.'},
+      {emoji:'📓',name:'Записная книжка',text:'Понадобится для записей мыслей в дороге, во время семинаров или конференций. Не бери в привычку запоминать имена, телефоны, идеи и любые мысли. Забудешь.'},
+      {emoji:'🧻',name:'Салфетки',text:'Частые переезды, десятки рукопожатий в день, регулярные кофе-брейки, где еду чаще всего берут руками. Влажные салфетки тут просто незаменимы. Рекомендация: используй антибактериальные жидкости на спиртовой основе.'},
+      {emoji:'🧴',name:'Пятновыводитель',text:'Порой случается этот неловкий момент, когда приятный и вкусный кофе-брейк заканчивается пятном на сорочке или брюках. А ведь конференция только началась. Но зачем выдумывать велосипед, когда есть компактные пятновыводители?'},
+      {emoji:'💊',name:'Аптечка',text:'Частые переезды и длительные конференции выматывают. Не нужно с собой брать огромную аптечку. Отрежь по 2–4 таблетки от каждой пластины и возьми только средства от головной боли, от давления и для улучшения пищеварения.'},
+      {emoji:'🍬',name:'Мятные конфеты',text:'Продолжая тему кофе-брейков, убедись, что после его завершения с тобой приятно общаться. Как говорится: «Свежесть дыхания облегчает понимание».'},
+      {emoji:'📖',name:'Книга или журнал',text:'Любой нетворкер должен уделять время развитию своего кругозора. Он помогает поддержать разговор на разные темы. Поэтому возьми в привычку читать книги и журналы в свободную минуту.'},
+      {emoji:'🔋',name:'Зарядное устройство',text:'Универсальное зарядное устройство — гаджет размером с визитницу, которое заряжает ваш телефон без подключения к электричеству. Выручает при каждой поездке.'},
+      {emoji:'✨',name:'Парфюм',text:'Дело каждого использовать парфюм или нет. Можно держать в сумке парфюм маленькой ёмкости 30 мл или купить пробники.'}
+    ];
+    var shelf = document.getElementById('bag-shelf');
+    var zone = document.getElementById('bag-zone');
+    var modal = document.getElementById('bag-modal');
+    var mTitle = document.getElementById('bag-modal-title');
+    var mText = document.getElementById('bag-modal-text');
+    var mTake = document.getElementById('bag-modal-take');
+    var btnGo = document.getElementById('btn-bag-go');
+    var doneMsg = document.getElementById('bag-done-msg');
+    var currentIdx = -1;
+    var taken = 0;
 
+    items.forEach(function(item, i) {
+      var el = document.createElement('div');
+      el.className = 'bag-item';
+      el.dataset.idx = i;
+      el.innerHTML = '<span class="bag-emoji">' + item.emoji + '</span>' + item.name;
+      el.addEventListener('click', function() {
+        currentIdx = i;
+        mTitle.textContent = item.emoji + ' ' + item.name;
+        mText.textContent = item.text;
+        modal.classList.add('active');
+      });
+      shelf.appendChild(el);
+    });
+
+    mTake.addEventListener('click', function() {
+      if (currentIdx < 0) return;
+      var el = shelf.querySelector('[data-idx="' + currentIdx + '"]');
+      if (el && !el.classList.contains('taken')) {
+        el.classList.add('taken');
+        var chip = document.createElement('div');
+        chip.className = 'bag-chip';
+        chip.textContent = items[currentIdx].emoji + ' ' + items[currentIdx].name;
+        zone.appendChild(chip);
+        taken++;
+        if (taken >= items.length) {
+          doneMsg.style.display = 'block';
+          btnGo.style.display = 'inline-flex';
+        }
+      }
+      modal.classList.remove('active');
+      currentIdx = -1;
+    });
+
+    modal.addEventListener('click', function(e) {
+      if (e.target === modal) modal.classList.remove('active');
+    });
+
+    btnGo.addEventListener('click', function() {
+      showScreen('screen-22');
+    });
+  }
   // ===== Экран 22–23: персонажи конференции =====
   const confCharacters = [
     { id: 'c1', name: 'Ольга', sphere: 'Карьера', match: true, x: '20%', y: '30%' },
@@ -4175,6 +4330,7 @@ popup.style.pointerEvents = 'none';
     initGoalHud();
     initBizcard();
     initProfileAndSticky();
+    initBag();
     initConference();
     initFollowup();
     initCalendar();
